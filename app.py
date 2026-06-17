@@ -7,7 +7,7 @@ from docx.shared import Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 import plotly.graph_objects as go
 
-def generate_word_report(S, Z, M, H, W_vid, P, ITS):
+def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     from docx.oxml.ns import qn
     from docx.oxml import OxmlElement
     doc = Document()
@@ -88,8 +88,8 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS):
     _run(p.add_run("Оценка эффективности интеллектуальной транспортной системы"),
          size=14, bold=True)
 
-    add_p("По методологии Евстигнеева И.А. | БГТУ им. В.Г. Шухова, 2026",
-          size=11, align=WD_ALIGN_PARAGRAPH.CENTER, italic=True, sa=2)
+    if obj_name:
+        add_p(obj_name, size=13, align=WD_ALIGN_PARAGRAPH.CENTER, sa=2)
 
     add_p(f"Дата формирования отчёта: {datetime.now().strftime('%d.%m.%Y  %H:%M')}",
           size=12, align=WD_ALIGN_PARAGRAPH.LEFT, sa=6)
@@ -116,7 +116,7 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS):
     tblPr.append(tblLayout)
 
     hdr = table.rows[0].cells
-    for i, txt in enumerate(["Комплексный показатель", "Показатель", "Значение, %", "Оценка"]):
+    for i, txt in enumerate(["Комплексные показатели", "Показатель", "Значение, %", "Оценка"]):
         set_cell(hdr[i], txt, align=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
         thick_cell(hdr[i], i)
 
@@ -185,7 +185,7 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS):
     return buf
 
 
-def generate_pdf_report(S, Z, M, H, W_vid, P, ITS):
+def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     import os
     from fpdf import FPDF
 
@@ -229,13 +229,11 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS):
         "Оценка эффективности интеллектуальной транспортной системы",
         align="C")
     pdf.ln(2)
-    pdf.set_font(fname, "", 11)
-    pdf.cell(0, 6,
-        "Po metodologii Evstigneeva I.A. | BGTU im. V.G. Shukhova, 2026"
-        if fname == "Helvetica" else
-        "По методологии Евстигнеева И.А. | БГТУ им. В.Г. Шухова, 2026",
-        align="C")
-    pdf.ln(8)
+    if obj_name:
+        pdf.set_font(fname, "", 13)
+        pdf.multi_cell(0, 7, obj_name, align="C")
+        pdf.ln(2)
+    pdf.ln(4)
     pdf.set_font(fname, "", 12)
     pdf.cell(0, 6, f"Дата: {datetime.now().strftime('%d.%m.%Y  %H:%M')}")
     pdf.ln(10)
@@ -251,7 +249,7 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS):
     # Ширины: 170 мм = 25 левое поле; A4 = 210; правое = 15 → контент 170 мм
     cw = [72, 18, 26, 54]
     pdf.set_font(fname, "B", 11)
-    for txt, w in zip(["Комплексный показатель", "Показ.", "Значение, %", "Оценка"], cw):
+    for txt, w in zip(["Комплексные показатели", "Показ.", "Значение, %", "Оценка"], cw):
         pdf.cell(w, 8, txt, border=1, align="C")
     pdf.ln()
 
@@ -1177,7 +1175,7 @@ elif section.startswith("VII. "):
     stamp = datetime.now().strftime('%d%m%Y')
     col_w, col_p = st.columns(2)
     with col_w:
-        word_buf = generate_word_report(S, Z, M, H, W_vid, P, ITS)
+        word_buf = generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=st.session_state.get("_obj_name", ""))
         st.download_button(
             label="⬇️ Скачать Word (.docx)",
             data=word_buf,
@@ -1186,7 +1184,7 @@ elif section.startswith("VII. "):
             use_container_width=True,
         )
     with col_p:
-        pdf_buf = generate_pdf_report(S, Z, M, H, W_vid, P, ITS)
+        pdf_buf = generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=st.session_state.get("_obj_name", ""))
         st.download_button(
             label="⬇️ Скачать PDF (.pdf)",
             data=pdf_buf,
