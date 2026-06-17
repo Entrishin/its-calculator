@@ -1075,8 +1075,7 @@ elif section.startswith("VII. "):
     col_radar, col_res = st.columns(2)
 
     with col_radar:
-        st.caption("Диаграмма-паук показывает баллы каждой подсистемы (0–100 %).")
-        st.caption("Чем ближе фигура к внешней границе — тем лучше.")
+        st.markdown("<small>Диаграмма-паук показывает баллы каждой подсистемы (0–100 %).<br>Чем ближе фигура к внешней границе — тем лучше.</small>", unsafe_allow_html=True)
         labels = ['S — Светофоры', 'Z — БДД', 'M — Мониторинг',
                   'H — Метео', 'W — Видео', 'P — НГПТ']
         vals   = [max(0.0, S), max(0.0, Z), max(0.0, M),
