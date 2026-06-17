@@ -116,7 +116,7 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS):
     tblPr.append(tblLayout)
 
     hdr = table.rows[0].cells
-    for i, txt in enumerate(["Подсистема", "Показатель", "Значение, %", "Оценка"]):
+    for i, txt in enumerate(["Комплексный показатель", "Показатель", "Значение, %", "Оценка"]):
         set_cell(hdr[i], txt, align=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
         thick_cell(hdr[i], i)
 
@@ -251,7 +251,7 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS):
     # Ширины: 170 мм = 25 левое поле; A4 = 210; правое = 15 → контент 170 мм
     cw = [72, 18, 26, 54]
     pdf.set_font(fname, "B", 11)
-    for txt, w in zip(["Подсистема", "Показ.", "Значение, %", "Оценка"], cw):
+    for txt, w in zip(["Комплексный показатель", "Показ.", "Значение, %", "Оценка"], cw):
         pdf.cell(w, 8, txt, border=1, align="C")
     pdf.ln()
 
@@ -1000,7 +1000,7 @@ elif section.startswith("VII. "):
         else:         return "🔴 Неудовлетворительно"
 
     df = pd.DataFrame({
-        "Подсистема": [
+        "Комплексный показатель": [
             "S — Светофорное управление",
             "Z — Безопасность дорожного движения",
             "M — Мониторинг транспортного потока",
@@ -1039,7 +1039,7 @@ elif section.startswith("VII. "):
     col_radar, col_res = st.columns(2)
 
     with col_radar:
-        st.markdown("<small style='color:rgba(49,51,63,0.6);line-height:1.2'>Диаграмма-паук показывает баллы каждой подсистемы (0–100 %).<br>Чем ближе фигура к внешней границе — тем лучше.</small>", unsafe_allow_html=True)
+        st.markdown("<small style='color:rgba(49,51,63,0.6);line-height:1.2'>Диаграмма-паук показывает баллы каждого комплексного показателя (0–100 %).<br>Чем ближе фигура к внешней границе — тем лучше.</small>", unsafe_allow_html=True)
         labels = ['S — Светофоры', 'Z — БДД', 'M — Мониторинг',
                   'H — Метео', 'W — Видео', 'P — НГПТ']
         vals   = [max(0.0, S), max(0.0, Z), max(0.0, M),
@@ -1086,7 +1086,7 @@ elif section.startswith("VII. "):
         st.plotly_chart(fig, use_container_width=True)
 
     with col_res:
-        st.caption("Гистограмма показывает, сколько процентов каждая подсистема реально добавляет в итоговый ИТСэф с учётом своего веса.")
+        st.caption("Гистограмма показывает, сколько процентов каждый комплексный показатель реально добавляет в итоговый ИТСэф с учётом своего веса.")
         sub_names   = ['S<br>Светофоры', 'Z<br>БДД', 'M<br>Мониторинг',
                        'H<br>Метео', 'W<br>Видео', 'P<br>НГПТ']
         contribs    = [0.2*S, 0.2*Z, 0.1*M, 0.1*H, 0.2*W_vid, 0.2*P]
