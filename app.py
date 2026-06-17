@@ -13,9 +13,12 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     doc = Document()
 
     def grade_text(v):
-        if v >= 80:   return "Хорошо (≥ 80 %)"
-        elif v >= 50: return "Удовлетворительно (50–80 %)"
-        else:         return "Неудовлетворительно (< 50 %)"
+        if v <= 19:   return "0 уровень зрелости"
+        elif v <= 39: return "1 уровень зрелости"
+        elif v <= 54: return "2 уровень зрелости"
+        elif v <= 69: return "3 уровень зрелости"
+        elif v <= 84: return "4 уровень зрелости"
+        else:         return "5 уровень зрелости"
 
     def _run(run, size=14, bold=False, italic=False):
         run.font.name = "Times New Roman"
@@ -190,9 +193,12 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     from fpdf import FPDF
 
     def grade_text(v):
-        if v >= 80:   return "Хорошо (>= 80 %)"
-        elif v >= 50: return "Удовлетворительно (50-80 %)"
-        else:         return "Неудовлетворительно (< 50 %)"
+        if v <= 19:   return "0 уровень зрелости"
+        elif v <= 39: return "1 уровень зрелости"
+        elif v <= 54: return "2 уровень зрелости"
+        elif v <= 69: return "3 уровень зрелости"
+        elif v <= 84: return "4 уровень зрелости"
+        else:         return "5 уровень зрелости"
 
     def find_font(bold=False):
         variants = ["DejaVuSans-Bold.ttf", "DejaVuSans.ttf"] if bold else ["DejaVuSans.ttf"]
@@ -241,13 +247,15 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     # ── Раздел 1: Таблица ──
     pdf.set_font(fname, "B", 13)
     pdf.cell(0, 7, "1  Результаты по подсистемам")
-    pdf.ln(5)
+    pdf.ln()   # сдвиг ровно на высоту ячейки (7 мм)
+    pdf.ln(3)  # дополнительный отступ
     pdf.set_font(fname, "", 11)
     pdf.cell(0, 5, "Таблица 1 — Результаты по подсистемам ИТС")
-    pdf.ln(3)
+    pdf.ln()   # сдвиг на высоту ячейки (5 мм)
+    pdf.ln(2)  # дополнительный отступ
 
     # Ширины: 170 мм = 25 левое поле; A4 = 210; правое = 15 → контент 170 мм
-    cw = [80, 16, 26, 48]
+    cw = [82, 14, 24, 50]
     lh = 6  # высота строки в мм
     pdf.set_font(fname, "B", 10)
     for txt, w in zip(["Комплексные показатели", "Пок.", "Значение, %", "Оценка"], cw):
@@ -279,10 +287,12 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     # ── Раздел 2: Формула ──
     pdf.set_font(fname, "B", 13)
     pdf.cell(0, 7, "2  Сводная оценка эффективности ИТС")
-    pdf.ln(5)
+    pdf.ln()
+    pdf.ln(3)
     pdf.set_font(fname, "", 12)
     pdf.cell(0, 6, "ИТСэф = 0,2·S + 0,2·Z + 0,1·M + 0,1·H + 0,2·W + 0,2·P")
-    pdf.ln(5)
+    pdf.ln()
+    pdf.ln(2)
 
     pdf.set_font(fname, "", 11)
     for line in [
@@ -306,7 +316,8 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     # ── Раздел 3: Итог ──
     pdf.set_font(fname, "B", 13)
     pdf.cell(0, 7, "3  Итоговая оценка")
-    pdf.ln(5)
+    pdf.ln()
+    pdf.ln(3)
     pdf.set_font(fname, "B", 13)
     pdf.cell(0, 8, f"ИТСэф = {ITS:.2f} %  —  {grade_text(ITS)}")
 
