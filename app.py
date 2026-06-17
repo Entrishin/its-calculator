@@ -957,7 +957,6 @@ elif section.startswith("VII. "):
         height=340,
     )
     st.plotly_chart(fig_bar, use_container_width=True)
-    st.caption("Цвет столбика: 🟢 ≥ 80 % — хорошо  |  🟡 50–80 % — удовлетворительно  |  🔴 < 50 % — неудовлетворительно")
 
     st.divider()
     st.subheader("📄 Экспорт отчёта")
