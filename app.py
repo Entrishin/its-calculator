@@ -202,10 +202,6 @@ def grade(v):
     else:         return "🔴 Неудовлетворительно (< 50%)"
 
 def save_button(label, key, value):
-    st.caption(
-        "📋 **Норматив по методологии Евстигнеева (2026):** "
-        "≥ 80 % — хорошо · 50–80 % — удовлетворительно · < 50 % — неудовлетворительно"
-    )
     if st.button(f"💾 Сохранить {label} для раздела VII", key=f"save_{key}"):
         st.session_state[key] = value
         st.success(f"{label} = {value:.2f}% сохранён!")
