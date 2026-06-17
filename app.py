@@ -902,6 +902,49 @@ elif section.startswith("VII. "):
                 st.markdown(f"- {name}: **{val:.1f} %**")
 
     st.divider()
+
+    # ── Гистограмма вкладов ──────────────────────────────────────
+    sub_names   = ['S<br>Светофоры', 'Z<br>БДД', 'M<br>Мониторинг',
+                   'H<br>Метео', 'W<br>Видео', 'P<br>НГПТ']
+    contribs    = [0.2*S, 0.2*Z, 0.1*M, 0.1*H, 0.2*W_vid, 0.2*P]
+    max_contrib = [20, 20, 10, 10, 20, 20]
+
+    bar_colors = []
+    for c, m in zip(contribs, max_contrib):
+        ratio = c / m if m > 0 else 0
+        if ratio >= 0.8:   bar_colors.append('#27ae60')
+        elif ratio >= 0.5: bar_colors.append('#f39c12')
+        else:              bar_colors.append('#e74c3c')
+
+    fig_bar = go.Figure()
+    fig_bar.add_trace(go.Bar(
+        x=sub_names, y=max_contrib,
+        marker_color='rgba(180,180,180,0.25)',
+        marker_line=dict(color='#bbb', width=1),
+        name='Макс. возможный вклад',
+    ))
+    fig_bar.add_trace(go.Bar(
+        x=sub_names, y=contribs,
+        marker_color=bar_colors,
+        marker_line=dict(color='white', width=0.5),
+        name='Фактический вклад',
+        text=[f'{c:.1f} %' for c in contribs],
+        textposition='outside',
+        textfont=dict(size=11, color='#333'),
+    ))
+    y_min = min(min(contribs) - 2, -1)
+    fig_bar.update_layout(
+        barmode='overlay',
+        yaxis=dict(range=[y_min, 23], title='Вклад в ИТСэф, %', gridcolor='#eee'),
+        xaxis=dict(tickfont=dict(size=11)),
+        legend=dict(orientation='h', y=-0.22, x=0.5, xanchor='center', font=dict(size=11)),
+        plot_bgcolor='white',
+        margin=dict(t=10, b=80, l=50, r=20),
+        height=320,
+    )
+    st.plotly_chart(fig_bar, use_container_width=True)
+
+    st.divider()
     st.subheader("📄 Экспорт отчёта")
     report_buf = generate_word_report(S, Z, M, H, W_vid, P, ITS)
     filename = f"ИТС_отчёт_{datetime.now().strftime('%d%m%Y')}.docx"
