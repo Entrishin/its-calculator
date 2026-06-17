@@ -390,6 +390,7 @@ with st.sidebar:
     st.subheader("Прогресс")
     st.progress(saved_count / 6)
     st.caption(f"Заполнено {saved_count} / 6 разделов")
+    st.markdown("<div style='margin-bottom:8px'></div>", unsafe_allow_html=True)
 
     sidebar_labels = [
         ('S',     'S — Светофоры'),
