@@ -341,7 +341,8 @@ def grade(v):
 def save_button(label, key, value):
     if st.button(f"💾 Сохранить {label} для раздела VII", key=f"save_{key}"):
         st.session_state[key] = value
-        st.success(f"{label} = {value:.2f}% сохранён!")
+        st.toast(f"{label} = {value:.2f} % сохранён!", icon="✅")
+        st.rerun()
 
 def dt_block(key_prefix):
     with st.expander("Временной диапазон ΔT"):
