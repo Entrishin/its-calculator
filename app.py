@@ -241,6 +241,12 @@ with st.sidebar:
     if not any_saved:
         st.caption("Пока нет сохранённых значений.\nРассчитайте разделы I–VI.")
 
+    st.divider()
+    if st.button("🔄 Сбросить всё", use_container_width=True, type="secondary"):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.rerun()
+
 
 # ══════════════════════════════════════════════════════════════════
 # I. СВЕТОФОРНОЕ УПРАВЛЕНИЕ
