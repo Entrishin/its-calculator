@@ -370,7 +370,7 @@ with st.sidebar:
         st.caption("Пока нет сохранённых значений.\nРассчитайте разделы I–VI.")
 
     st.divider()
-    if st.button("🧪 Тестовые данные", use_container_width=True, type="secondary"):
+    if st.button("Заполнить тестовыми данными", use_container_width=True, type="secondary"):
         test = {'S': 85.0, 'Z': 44.0, 'M': 78.0, 'H': 62.0, 'W_vid': 88.0, 'P': 71.0}
         for k, v in test.items():
             st.session_state[k] = v
