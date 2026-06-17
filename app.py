@@ -202,6 +202,10 @@ def grade(v):
     else:         return "🔴 Неудовлетворительно (< 50%)"
 
 def save_button(label, key, value):
+    st.caption(
+        "📋 **Норматив по методологии Евстигнеева (2026):** "
+        "≥ 80 % — хорошо · 50–80 % — удовлетворительно · < 50 % — неудовлетворительно"
+    )
     if st.button(f"💾 Сохранить {label} для раздела VII", key=f"save_{key}"):
         st.session_state[key] = value
         st.success(f"{label} = {value:.2f}% сохранён!")
@@ -434,7 +438,8 @@ elif section.startswith("II. "):
         Z18 = (n_dtp * 1e6) / (N_int * L_len * m_yrs * 365)
         st.divider()
         st.metric("🎯 Z₁", f"{Z18:.4f}")
-        st.caption("Чем меньше — тем безопаснее участок")
+        st.caption("ОДМ 218.6.027-2017: чем ниже значение — тем безопаснее участок. "
+                   "Ориентир: дороги I кат. — не более 0,20; II кат. — не более 0,30; III кат. — не более 0,40")
 
     with t2:
         st.subheader("Z₂ — Показатель аварийности с весовыми коэффициентами")
