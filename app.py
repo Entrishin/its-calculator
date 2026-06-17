@@ -242,10 +242,20 @@ with st.sidebar:
         st.caption("Пока нет сохранённых значений.\nРассчитайте разделы I–VI.")
 
     st.divider()
-    if st.button("🔄 Сбросить всё", use_container_width=True, type="secondary"):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
+    if not st.session_state.get("_confirm_reset"):
+        if st.button("🔄 Сбросить всё", use_container_width=True, type="secondary"):
+            st.session_state["_confirm_reset"] = True
+            st.rerun()
+    else:
+        st.warning("Все введённые данные будут удалены. Продолжить?")
+        c1, c2 = st.columns(2)
+        if c1.button("✅ Да", use_container_width=True, type="primary"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.rerun()
+        if c2.button("❌ Отмена", use_container_width=True):
+            st.session_state["_confirm_reset"] = False
+            st.rerun()
 
 
 # ══════════════════════════════════════════════════════════════════
