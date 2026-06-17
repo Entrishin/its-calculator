@@ -932,15 +932,27 @@ elif section.startswith("VII. "):
         textposition='outside',
         textfont=dict(size=11, color='#333'),
     ))
+    # Цветовые пояснения в легенде (невидимые бары — только для подписи)
+    for clr, lbl in [
+        ('#27ae60', 'цвет: показатель ≥ 80 % — хорошо'),
+        ('#f39c12', 'цвет: 50–80 % — удовлетворительно'),
+        ('#e74c3c', 'цвет: < 50 % — неудовлетворительно'),
+    ]:
+        fig_bar.add_trace(go.Bar(
+            x=[None], y=[None],
+            marker_color=clr,
+            name=lbl,
+            showlegend=True,
+        ))
     y_min = min(min(contribs) - 2, -1)
     fig_bar.update_layout(
         barmode='overlay',
         yaxis=dict(range=[y_min, 23], title='Вклад в ИТСэф, %', gridcolor='#eee'),
         xaxis=dict(tickfont=dict(size=11)),
-        legend=dict(orientation='h', y=-0.22, x=0.5, xanchor='center', font=dict(size=11)),
+        legend=dict(orientation='h', y=-0.32, x=0.5, xanchor='center', font=dict(size=11)),
         plot_bgcolor='white',
-        margin=dict(t=10, b=80, l=50, r=20),
-        height=320,
+        margin=dict(t=10, b=110, l=50, r=20),
+        height=340,
     )
     st.plotly_chart(fig_bar, use_container_width=True)
 
