@@ -615,73 +615,58 @@ if section.startswith("I. "):
 # ══════════════════════════════════════════════════════════════════
 elif section.startswith("II. "):
     st.header("II. Оценка безопасности дорожного движения")
+    st.latex(r"Z = \left(1 - \frac{A + \alpha D + \beta W}{L \cdot N}\right)\times 100\%")
+    st.info("Z → 100 % — максимальная безопасность  |  Z → 0 % или < 0 % — высокая аварийность")
 
-    t1, t2 = st.tabs([
-        "Z — Аварийность (адаптированная формула по ОДМ 218.6.027-2017)",
-        "📋 Итог Z",
-    ])
+    is_agglom = st.checkbox("Городская агломерация (раздельный учёт по типам дорог)")
 
-    with t1:
-        st.subheader("Z — Показатель аварийности с весовыми коэффициентами")
-        st.latex(r"Z = \left(1 - \frac{A + \alpha D + \beta W}{L \cdot N}\right)\times 100\%")
-        st.info("Z → 100 % — максимальная безопасность  |  Z → 0 % или < 0 % — высокая аварийность")
+    if is_agglom:
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            st.markdown("*Магистральные общегородские*")
+            L1 = st.number_input("L₁, км", 0.0, 1e5, 50.0,  key="L1")
+            D1 = st.number_input("D₁ — погибших", 0, 100000, 5,  key="D1")
+            W1 = st.number_input("W₁ — раненых",  0, 100000, 20, key="W1")
+            N1 = st.number_input("N₁, авт./сут",  0, 1000000, 15000, key="N1")
+        with c2:
+            st.markdown("*Магистральные районные*")
+            L2 = st.number_input("L₂, км", 0.0, 1e5, 100.0, key="L2")
+            D2 = st.number_input("D₂ — погибших", 0, 100000, 8,  key="D2")
+            W2 = st.number_input("W₂ — раненых",  0, 100000, 35, key="W2")
+            N2 = st.number_input("N₂, авт./сут",  0, 1000000, 8000, key="N2")
+        with c3:
+            st.markdown("*Местного значения*")
+            L3 = st.number_input("L₃, км", 0.0, 1e5, 150.0, key="L3")
+            D3 = st.number_input("D₃ — погибших", 0, 100000, 3,  key="D3")
+            W3 = st.number_input("W₃ — раненых",  0, 100000, 15, key="W3")
+            N3 = st.number_input("N₃, авт./сут",  0, 1000000, 3000, key="N3")
+        A_dtp = st.number_input("A — всего ДТП за расчётный период", 0, 1000000, 50)
+        n_types = st.number_input("n — число типов дорог в расчёте", 1, 3, 3, key="n_types")
+        L = L1 + L2 + L3
+        D = D1 + D2 + D3
+        W_inj = W1 + W2 + W3
+        N = (N1 + N2 + N3) / n_types
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("L, км", f"{L:.1f}"); c2.metric("D", D); c3.metric("W", W_inj); c4.metric("N, авт./сут", f"{N:.0f}")
+    else:
+        col1, col2 = st.columns(2)
+        A_dtp = col1.number_input("A — число ДТП",           0, 1000000, 50)
+        D     = col1.number_input("D — число погибших",      0, 100000,  10)
+        W_inj = col1.number_input("W — число раненых",       0, 100000,  40)
+        L     = col2.number_input("L — протяжённость, км",   0.1, 1e5,   100.0)
+        N     = col2.number_input("N — суточная интенсивность, авт./сут", 1.0, 1e7, 10000.0)
 
-        is_agglom = st.checkbox("Городская агломерация (раздельный учёт по типам дорог)")
-
-        if is_agglom:
-            c1, c2, c3 = st.columns(3)
-            with c1:
-                st.markdown("*Магистральные общегородские*")
-                L1 = st.number_input("L₁, км", 0.0, 1e5, 50.0,  key="L1")
-                D1 = st.number_input("D₁ — погибших", 0, 100000, 5,  key="D1")
-                W1 = st.number_input("W₁ — раненых",  0, 100000, 20, key="W1")
-                N1 = st.number_input("N₁, авт./сут",  0, 1000000, 15000, key="N1")
-            with c2:
-                st.markdown("*Магистральные районные*")
-                L2 = st.number_input("L₂, км", 0.0, 1e5, 100.0, key="L2")
-                D2 = st.number_input("D₂ — погибших", 0, 100000, 8,  key="D2")
-                W2 = st.number_input("W₂ — раненых",  0, 100000, 35, key="W2")
-                N2 = st.number_input("N₂, авт./сут",  0, 1000000, 8000, key="N2")
-            with c3:
-                st.markdown("*Местного значения*")
-                L3 = st.number_input("L₃, км", 0.0, 1e5, 150.0, key="L3")
-                D3 = st.number_input("D₃ — погибших", 0, 100000, 3,  key="D3")
-                W3 = st.number_input("W₃ — раненых",  0, 100000, 15, key="W3")
-                N3 = st.number_input("N₃, авт./сут",  0, 1000000, 3000, key="N3")
-            A_dtp = st.number_input("A — всего ДТП за расчётный период", 0, 1000000, 50)
-            n_types = st.number_input("n — число типов дорог в расчёте", 1, 3, 3, key="n_types")
-            L = L1 + L2 + L3
-            D = D1 + D2 + D3
-            W_inj = W1 + W2 + W3
-            N = (N1 + N2 + N3) / n_types
-            c1, c2, c3, c4 = st.columns(4)
-            c1.metric("L, км", f"{L:.1f}"); c2.metric("D", D); c3.metric("W", W_inj); c4.metric("N, авт./сут", f"{N:.0f}")
-        else:
-            col1, col2 = st.columns(2)
-            A_dtp = col1.number_input("A — число ДТП",           0, 1000000, 50)
-            D     = col1.number_input("D — число погибших",      0, 100000,  10)
-            W_inj = col1.number_input("W — число раненых",       0, 100000,  40)
-            L     = col2.number_input("L — протяжённость, км",   0.1, 1e5,   100.0)
-            N     = col2.number_input("N — суточная интенсивность, авт./сут", 1.0, 1e7, 10000.0)
-
-        st.divider()
-        alpha = st.number_input("α — вес погибших (рекомендовано: 5)", 0.0, 100.0, 5.0)
-        beta  = st.number_input("β — вес раненых (рекомендовано: 1)",  0.0, 100.0, 1.0)
-        denom = L * N
-        numer = A_dtp + alpha * D + beta * W_inj
-        Z19 = (1 - numer / denom) * 100 if denom > 0 else 0.0
-        st.markdown(f"Z = (1 − ({A_dtp} + {alpha}×{D} + {beta}×{W_inj}) / ({L}×{N:.0f})) × 100 % = **{Z19:.2f} %**")
-        st.metric("🎯 Z", f"{Z19:.2f} %",
-                  help="Адаптированная формула по ОДМ 218.6.027-2017. Чем ближе к 100 % — тем безопаснее. Формула (19).")
-        st.caption(grade(Z19))
-
-    with t2:
-        st.subheader("Z — Безопасность дорожного движения")
-        st.markdown(f"Z = **{Z19:.2f} %**")
-        st.metric("🏆 Z — Безопасность дорожного движения", f"{Z19:.2f} %",
-                  help="Адаптированная формула по ОДМ 218.6.027-2017. Вес в ИТСэф: 0,20.")
-        st.caption(grade(Z19))
-        save_button("Z", "Z", Z19)
+    st.divider()
+    alpha = st.number_input("α — вес погибших (рекомендовано: 5)", 0.0, 100.0, 5.0)
+    beta  = st.number_input("β — вес раненых (рекомендовано: 1)",  0.0, 100.0, 1.0)
+    denom = L * N
+    numer = A_dtp + alpha * D + beta * W_inj
+    Z19 = (1 - numer / denom) * 100 if denom > 0 else 0.0
+    st.markdown(f"Z = (1 − ({A_dtp} + {alpha}×{D} + {beta}×{W_inj}) / ({L}×{N:.0f})) × 100 % = **{Z19:.2f} %**")
+    st.metric("🏆 Z — Безопасность дорожного движения", f"{Z19:.2f} %",
+              help="Адаптированная формула по ОДМ 218.6.027-2017. Вес в ИТСэф: 0,20.")
+    st.caption(grade(Z19))
+    save_button("Z", "Z", Z19)
 
     dt_block("z")
 
