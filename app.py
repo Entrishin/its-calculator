@@ -373,6 +373,7 @@ def dt_block(key_prefix):
 with st.sidebar:
     st.title("🚦 Калькулятор ИТС")
     st.caption("Евстигнеев И.А. | БГТУ им. В.Г. Шухова, 2026")
+    st.markdown("<div style='margin-bottom:8px'></div>", unsafe_allow_html=True)
 
     section = st.radio("Раздел:", [
         "I. Светофорное управление",
