@@ -377,7 +377,7 @@ with st.sidebar:
         st.rerun()
 
     if not st.session_state.get("_confirm_reset"):
-        if st.button("🔄 Сбросить всё", use_container_width=True, type="secondary"):
+        if st.button("Сбросить все сохранённые результаты", use_container_width=True, type="secondary"):
             st.session_state["_confirm_reset"] = True
             st.rerun()
     else:
