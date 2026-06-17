@@ -1137,18 +1137,14 @@ elif section.startswith("VII. "):
                 "и среднюю скорость НГПТ"),
     ]
     with st.expander("Рекомендации по развитию ИТС", expanded=True):
-        need_recs = [(name, desc) for v, name, desc in _recs_data if v < 80]
+        need_recs = [(v, name, desc) for v, name, desc in _recs_data if v < 80]
         if not need_recs:
             st.success("Все подсистемы функционируют эффективно. "
                        "Рекомендуется поддерживать достигнутый уровень "
                        "и проводить периодический мониторинг показателей.")
         else:
-            for name, desc in need_recs:
-                icon = "🔴" if dict(zip(
-                    ["S — Светофорное управление","Z — Безопасность дорожного движения",
-                     "M — Мониторинг транспортного потока","H — Метеомониторинг",
-                     "W — Видеонаблюдение и инциденты","P — Общественный транспорт"],
-                    [S, Z, M, H, W_vid, P]))[name] < 50 else "🟡"
+            for v, name, desc in need_recs:
+                icon = "🔴" if v < 50 else "🟡"
                 st.markdown(f"{icon} **{name}:** {desc}.")
 
     st.divider()
