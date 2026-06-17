@@ -335,7 +335,7 @@ def save_button(label, key, value):
         st.success(f"{label} = {value:.2f}% сохранён!")
 
 def dt_block(key_prefix):
-    with st.expander("⏰ Временной диапазон ΔT"):
+    with st.expander("Временной диапазон ΔT"):
         st.latex(r"\Delta T = T_1 - T_2")
         col1, col2 = st.columns(2)
         T2 = col1.number_input("T₂ — начало (порядковый номер суток)", 1, 365, 1, key=f"{key_prefix}_T2")
