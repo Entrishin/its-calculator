@@ -324,6 +324,23 @@ st.markdown("""
 [data-baseweb="tab-list"] button[role="tab"]:last-child p {
     font-weight: 700 !important;
 }
+/* Компактный сайдбар */
+section[data-testid="stSidebar"] .stMarkdown p,
+section[data-testid="stSidebar"] .stCaption p {
+    margin-bottom: 2px !important;
+    line-height: 1.3 !important;
+}
+section[data-testid="stSidebar"] h3 {
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+}
+section[data-testid="stSidebar"] hr {
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+}
+section[data-testid="stSidebar"] [data-testid="stProgressBar"] {
+    margin-bottom: 2px !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
