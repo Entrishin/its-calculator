@@ -5,6 +5,7 @@ from datetime import datetime
 from docx import Document
 from docx.shared import Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+import plotly.graph_objects as go
 
 def generate_word_report(S, Z, M, H, W_vid, P, ITS):
     from docx.oxml.ns import qn
@@ -834,16 +835,71 @@ elif section.startswith("VII. "):
     )
     st.divider()
 
-    col1, col2 = st.columns([1, 2])
-    with col1:
+    col_radar, col_res = st.columns([3, 2])
+
+    with col_radar:
+        labels = ['S — Светофоры', 'Z — БДД', 'M — Мониторинг',
+                  'H — Метео', 'W — Видео', 'P — НГПТ']
+        vals   = [max(0.0, S), max(0.0, Z), max(0.0, M),
+                  max(0.0, H), max(0.0, W_vid), max(0.0, P)]
+        lc = labels + [labels[0]]
+        vc = vals   + [vals[0]]
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatterpolar(
+            r=[50]*7, theta=lc, fill='toself',
+            fillcolor='rgba(255,165,0,0.08)',
+            line=dict(color='orange', width=1.2, dash='dot'),
+            name='50 % — удовлетворительно'
+        ))
+        fig.add_trace(go.Scatterpolar(
+            r=[80]*7, theta=lc, fill='toself',
+            fillcolor='rgba(0,180,0,0.07)',
+            line=dict(color='green', width=1.2, dash='dot'),
+            name='80 % — хорошо'
+        ))
+        fig.add_trace(go.Scatterpolar(
+            r=vc, theta=lc, fill='toself',
+            fillcolor='rgba(30,100,220,0.22)',
+            line=dict(color='rgb(30,100,220)', width=2.5),
+            mode='lines+markers',
+            marker=dict(size=7),
+            name='Подсистемы ИТС'
+        ))
+        fig.update_layout(
+            polar=dict(
+                radialaxis=dict(
+                    range=[0, 100],
+                    tickvals=[0, 25, 50, 75, 100],
+                    tickfont=dict(size=10),
+                    gridcolor='#ddd'
+                ),
+                angularaxis=dict(tickfont=dict(size=11))
+            ),
+            legend=dict(orientation='h', yanchor='top', y=-0.12, x=0.5,
+                        xanchor='center', font=dict(size=11)),
+            margin=dict(t=20, b=80, l=60, r=60),
+            height=420,
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col_res:
         st.metric("🏆 ИТСэф", f"{ITS:.2f} %")
-    with col2:
         if ITS >= 80:
             st.success("🟢 **Хорошо** — ИТС функционирует эффективно")
         elif ITS >= 50:
             st.warning("🟡 **Удовлетворительно** — необходима оптимизация отдельных подсистем")
         else:
             st.error("🔴 **Неудовлетворительно** — требуется комплексная модернизация ИТС")
+
+        weak = [(n, v) for n, v in zip(
+            ['S (светофоры)', 'Z (БДД)', 'M (мониторинг)',
+             'H (метео)', 'W (видео)', 'P (НГПТ)'],
+            [S, Z, M, H, W_vid, P]) if v < 50]
+        if weak:
+            st.markdown("**Слабые места (< 50 %):**")
+            for name, val in sorted(weak, key=lambda x: x[1]):
+                st.markdown(f"- {name}: **{val:.1f} %**")
 
     st.divider()
     st.subheader("📄 Экспорт отчёта")
