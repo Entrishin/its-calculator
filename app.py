@@ -247,27 +247,32 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     pdf.ln(3)
 
     # Ширины: 170 мм = 25 левое поле; A4 = 210; правое = 15 → контент 170 мм
-    cw = [72, 18, 26, 54]
-    pdf.set_font(fname, "B", 11)
-    for txt, w in zip(["Комплексные показатели", "Показ.", "Значение, %", "Оценка"], cw):
+    cw = [80, 16, 26, 48]
+    lh = 6  # высота строки в мм
+    pdf.set_font(fname, "B", 10)
+    for txt, w in zip(["Комплексные показатели", "Пок.", "Значение, %", "Оценка"], cw):
         pdf.cell(w, 8, txt, border=1, align="C")
     pdf.ln()
 
-    pdf.set_font(fname, "", 11)
+    pdf.set_font(fname, "", 10)
     rows = [
         ("I.   Светофорное управление",          "S",  S),
         ("II.  Безопасность дорожного движения", "Z",  Z),
         ("III. Мониторинг транспортного потока", "M",  M),
         ("IV.  Метеомониторинг",                 "H",  H),
         ("V.   Видеонаблюдение и инциденты",     "W",  W_vid),
-        ("VI.  НГПТ",           "P",  P),
+        ("VI.  НГПТ",                            "P",  P),
     ]
     for name, sym, val in rows:
-        pdf.cell(cw[0], 7, name, border=1)
-        pdf.cell(cw[1], 7, sym,          border=1, align="C")
-        pdf.cell(cw[2], 7, f"{val:.2f}", border=1, align="C")
-        pdf.cell(cw[3], 7, grade_text(val), border=1)
-        pdf.ln()
+        x = pdf.get_x()
+        y = pdf.get_y()
+        pdf.multi_cell(cw[0], lh, name, border=1, align="L")
+        row_h = pdf.get_y() - y
+        pdf.set_xy(x + cw[0], y)
+        pdf.cell(cw[1], row_h, sym,               border=1, align="C")
+        pdf.cell(cw[2], row_h, f"{val:.2f}",      border=1, align="C")
+        pdf.cell(cw[3], row_h, grade_text(val),   border=1, align="L")
+        pdf.set_xy(x, y + row_h)
 
     pdf.ln(8)
 
