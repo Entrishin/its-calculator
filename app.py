@@ -184,6 +184,134 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS):
     buf.seek(0)
     return buf
 
+
+def generate_pdf_report(S, Z, M, H, W_vid, P, ITS):
+    import os
+    from fpdf import FPDF
+
+    def grade_text(v):
+        if v >= 80:   return "Хорошо (>= 80 %)"
+        elif v >= 50: return "Удовлетворительно (50-80 %)"
+        else:         return "Неудовлетворительно (< 50 %)"
+
+    def find_font(bold=False):
+        variants = ["DejaVuSans-Bold.ttf", "DejaVuSans.ttf"] if bold else ["DejaVuSans.ttf"]
+        linux_base = "/usr/share/fonts/truetype/dejavu/"
+        win_base   = "C:\\Windows\\Fonts\\"
+        win_names  = (["arialbd.ttf"] if bold else ["arial.ttf"])
+        for name in variants:
+            p = linux_base + name
+            if os.path.exists(p): return p
+        for name in win_names:
+            p = win_base + name
+            if os.path.exists(p): return p
+        return None
+
+    font_reg  = find_font(bold=False)
+    font_bold = find_font(bold=True)
+
+    pdf = FPDF(orientation="P", unit="mm", format="A4")
+    pdf.set_margins(left=25, top=20, right=15)
+    pdf.add_page()
+
+    if font_reg:
+        pdf.add_font("Main",  "",  font_reg)
+        pdf.add_font("Main",  "B", font_bold or font_reg)
+        fname = "Main"
+    else:
+        fname = "Helvetica"   # ASCII-only fallback
+
+    # ── Заголовок ──
+    pdf.set_font(fname, "B", 14)
+    pdf.multi_cell(0, 8,
+        "Оценka effektivnosti intellektual'noj transportnoj sistemy"
+        if fname == "Helvetica" else
+        "Оценка эффективности интеллектуальной транспортной системы",
+        align="C")
+    pdf.ln(2)
+    pdf.set_font(fname, "", 11)
+    pdf.cell(0, 6,
+        "Po metodologii Evstigneeva I.A. | BGTU im. V.G. Shukhova, 2026"
+        if fname == "Helvetica" else
+        "По методологии Евстигнеева И.А. | БГТУ им. В.Г. Шухова, 2026",
+        align="C")
+    pdf.ln(8)
+    pdf.set_font(fname, "", 12)
+    pdf.cell(0, 6, f"Дата: {datetime.now().strftime('%d.%m.%Y  %H:%M')}")
+    pdf.ln(10)
+
+    # ── Раздел 1: Таблица ──
+    pdf.set_font(fname, "B", 13)
+    pdf.cell(0, 7, "1  Результаты по подсистемам")
+    pdf.ln(5)
+    pdf.set_font(fname, "", 11)
+    pdf.cell(0, 5, "Таблица 1 — Результаты по подсистемам ИТС")
+    pdf.ln(3)
+
+    # Ширины: 170 мм = 25 левое поле; A4 = 210; правое = 15 → контент 170 мм
+    cw = [72, 18, 26, 54]
+    pdf.set_font(fname, "B", 11)
+    for txt, w in zip(["Подсистема", "Показ.", "Значение, %", "Оценка"], cw):
+        pdf.cell(w, 8, txt, border=1, align="C")
+    pdf.ln()
+
+    pdf.set_font(fname, "", 11)
+    rows = [
+        ("I.   Светофорное управление",          "S",  S),
+        ("II.  Безопасность дорожного движения", "Z",  Z),
+        ("III. Мониторинг транспортного потока", "M",  M),
+        ("IV.  Метеомониторинг",                 "H",  H),
+        ("V.   Видеонаблюдение и инциденты",     "W",  W_vid),
+        ("VI.  Общественный транспорт",           "P",  P),
+    ]
+    for name, sym, val in rows:
+        pdf.cell(cw[0], 7, name, border=1)
+        pdf.cell(cw[1], 7, sym,          border=1, align="C")
+        pdf.cell(cw[2], 7, f"{val:.2f}", border=1, align="C")
+        pdf.cell(cw[3], 7, grade_text(val), border=1)
+        pdf.ln()
+
+    pdf.ln(8)
+
+    # ── Раздел 2: Формула ──
+    pdf.set_font(fname, "B", 13)
+    pdf.cell(0, 7, "2  Сводная оценка эффективности ИТС")
+    pdf.ln(5)
+    pdf.set_font(fname, "", 12)
+    pdf.cell(0, 6, "ИТСэф = 0,2·S + 0,2·Z + 0,1·M + 0,1·H + 0,2·W + 0,2·P")
+    pdf.ln(5)
+
+    pdf.set_font(fname, "", 11)
+    for line in [
+        "где  S — показатель светофорного управления, %;",
+        "       Z — показатель безопасности дорожного движения, %;",
+        "       M — показатель мониторинга транспортного потока, %;",
+        "       H — показатель метеомониторинга, %;",
+        "       W — показатель видеонаблюдения и выявления инцидентов, %;",
+        "       P — показатель организации движения общественного транспорта, %.",
+    ]:
+        pdf.cell(0, 5, line)
+        pdf.ln()
+
+    pdf.ln(4)
+    pdf.set_font(fname, "", 12)
+    pdf.multi_cell(0, 6,
+        f"ИТСэф = 0,2×{S:.2f} + 0,2×{Z:.2f} + 0,1×{M:.2f} + "
+        f"0,1×{H:.2f} + 0,2×{W_vid:.2f} + 0,2×{P:.2f} = {ITS:.2f} %")
+    pdf.ln(8)
+
+    # ── Раздел 3: Итог ──
+    pdf.set_font(fname, "B", 13)
+    pdf.cell(0, 7, "3  Итоговая оценка")
+    pdf.ln(5)
+    pdf.set_font(fname, "B", 13)
+    pdf.cell(0, 8, f"ИТСэф = {ITS:.2f} %  —  {grade_text(ITS)}")
+
+    buf = io.BytesIO(pdf.output())
+    buf.seek(0)
+    return buf
+
+
 st.set_page_config(
     page_title="Эффективность ИТС",
     page_icon="🚦",
@@ -983,11 +1111,23 @@ elif section.startswith("VII. "):
 
     st.divider()
     st.subheader("📄 Экспорт отчёта")
-    report_buf = generate_word_report(S, Z, M, H, W_vid, P, ITS)
-    filename = f"ИТС_отчёт_{datetime.now().strftime('%d%m%Y')}.docx"
-    st.download_button(
-        label="⬇️ Скачать отчёт Word (.docx)",
-        data=report_buf,
-        file_name=filename,
-        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    )
+    stamp = datetime.now().strftime('%d%m%Y')
+    col_w, col_p = st.columns(2)
+    with col_w:
+        word_buf = generate_word_report(S, Z, M, H, W_vid, P, ITS)
+        st.download_button(
+            label="⬇️ Скачать Word (.docx)",
+            data=word_buf,
+            file_name=f"ИТС_отчёт_{stamp}.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            use_container_width=True,
+        )
+    with col_p:
+        pdf_buf = generate_pdf_report(S, Z, M, H, W_vid, P, ITS)
+        st.download_button(
+            label="⬇️ Скачать PDF (.pdf)",
+            data=pdf_buf,
+            file_name=f"ИТС_отчёт_{stamp}.pdf",
+            mime="application/pdf",
+            use_container_width=True,
+        )
