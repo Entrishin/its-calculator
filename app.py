@@ -698,7 +698,7 @@ elif section.startswith("III. "):
             d_m = st.number_input("d — контрольных суток",             1, 365, 90, key="d_m12")
             m12 = (p_m / d_m) * 100
             st.metric("M₁.₂", f"{m12:.2f} %")
-        n_meth = st.number_input("n — число методов сбора данных", 1, 10, 2, key="n_meth")
+        n_meth = st.selectbox("n — число методов сбора данных", [1, 2], index=1, key="n_meth")
         m1 = (m11 + m12) / n_meth
         st.divider(); st.metric("🎯 M₁", f"{m1:.2f} %"); st.caption(grade(m1))
 
