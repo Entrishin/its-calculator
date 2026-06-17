@@ -1053,7 +1053,7 @@ elif section.startswith("VII. "):
         st.error("🔴 **Неудовлетворительно** — требуется комплексная модернизация ИТС")
     st.divider()
 
-    col_radar, col_res = st.columns([3, 2])
+    col_radar, col_res = st.columns(2)
 
     with col_radar:
         st.caption("📡 Диаграмма-паук показывает баллы каждой подсистемы (0–100 %). Чем ближе фигура к внешней границе — тем лучше. Пунктиры: пороги «хорошо» (80 %) и «удовлетворительно» (50 %).")
@@ -1103,14 +1103,57 @@ elif section.startswith("VII. "):
         st.plotly_chart(fig, use_container_width=True)
 
     with col_res:
-        weak = [(n, v) for n, v in zip(
-            ['S (светофоры)', 'Z (БДД)', 'M (мониторинг)',
-             'H (метео)', 'W (видео)', 'P (НГПТ)'],
-            [S, Z, M, H, W_vid, P]) if v < 50]
-        if weak:
-            st.markdown("**Слабые места (< 50 %):**")
-            for name, val in sorted(weak, key=lambda x: x[1]):
-                st.markdown(f"- {name}: **{val:.1f} %**")
+        st.caption("📊 Гистограмма показывает, сколько процентов каждая подсистема реально добавляет в итоговый ИТСэф с учётом своего веса. Серый столбик — максимально возможный вклад при 100 %.")
+        sub_names   = ['S<br>Светофоры', 'Z<br>БДД', 'M<br>Мониторинг',
+                       'H<br>Метео', 'W<br>Видео', 'P<br>НГПТ']
+        contribs    = [0.2*S, 0.2*Z, 0.1*M, 0.1*H, 0.2*W_vid, 0.2*P]
+        max_contrib = [20, 20, 10, 10, 20, 20]
+
+        bar_colors = []
+        for c, m in zip(contribs, max_contrib):
+            ratio = c / m if m > 0 else 0
+            if ratio >= 0.8:   bar_colors.append('#27ae60')
+            elif ratio >= 0.5: bar_colors.append('#f39c12')
+            else:              bar_colors.append('#e74c3c')
+
+        fig_bar = go.Figure()
+        fig_bar.add_trace(go.Bar(
+            x=sub_names, y=max_contrib,
+            marker_color='rgba(180,180,180,0.25)',
+            marker_line=dict(color='#bbb', width=1),
+            name='Макс. возможный вклад',
+        ))
+        fig_bar.add_trace(go.Bar(
+            x=sub_names, y=contribs,
+            marker_color=bar_colors,
+            marker_line=dict(color='white', width=0.5),
+            name='Фактический вклад',
+            text=[f'{c:.1f} %' for c in contribs],
+            textposition='outside',
+            textfont=dict(size=11, color='#333'),
+        ))
+        for clr, lbl in [
+            ('#27ae60', 'показатель ≥ 80 % — хорошо'),
+            ('#f39c12', '50–80 % — удовлетворительно'),
+            ('#e74c3c', '< 50 % — неудовлетворительно'),
+        ]:
+            fig_bar.add_trace(go.Bar(
+                x=[None], y=[None],
+                marker_color=clr,
+                name=lbl,
+                showlegend=True,
+            ))
+        y_min = min(min(contribs) - 2, -1)
+        fig_bar.update_layout(
+            barmode='overlay',
+            yaxis=dict(range=[y_min, 23], title='Вклад в ИТСэф, %', gridcolor='#eee'),
+            xaxis=dict(tickfont=dict(size=11)),
+            legend=dict(orientation='h', y=-0.32, x=0.5, xanchor='center', font=dict(size=11)),
+            plot_bgcolor='white',
+            margin=dict(t=10, b=110, l=50, r=20),
+            height=420,
+        )
+        st.plotly_chart(fig_bar, use_container_width=True)
 
     st.divider()
 
@@ -1145,62 +1188,6 @@ elif section.startswith("VII. "):
             for v, name, desc in need_recs:
                 icon = "🔴" if v < 50 else "🟡"
                 st.markdown(f"{icon} **{name}:** {desc}.")
-
-    st.divider()
-
-    # ── Гистограмма вкладов ──────────────────────────────────────
-    st.caption("📊 Гистограмма показывает, сколько процентов каждая подсистема реально добавляет в итоговый ИТСэф с учётом своего веса. Серый столбик — максимально возможный вклад при 100 %. Чем меньше цветной столбик относительно серого — тем больше потенциал для роста.")
-    sub_names   = ['S<br>Светофоры', 'Z<br>БДД', 'M<br>Мониторинг',
-                   'H<br>Метео', 'W<br>Видео', 'P<br>НГПТ']
-    contribs    = [0.2*S, 0.2*Z, 0.1*M, 0.1*H, 0.2*W_vid, 0.2*P]
-    max_contrib = [20, 20, 10, 10, 20, 20]
-
-    bar_colors = []
-    for c, m in zip(contribs, max_contrib):
-        ratio = c / m if m > 0 else 0
-        if ratio >= 0.8:   bar_colors.append('#27ae60')
-        elif ratio >= 0.5: bar_colors.append('#f39c12')
-        else:              bar_colors.append('#e74c3c')
-
-    fig_bar = go.Figure()
-    fig_bar.add_trace(go.Bar(
-        x=sub_names, y=max_contrib,
-        marker_color='rgba(180,180,180,0.25)',
-        marker_line=dict(color='#bbb', width=1),
-        name='Макс. возможный вклад',
-    ))
-    fig_bar.add_trace(go.Bar(
-        x=sub_names, y=contribs,
-        marker_color=bar_colors,
-        marker_line=dict(color='white', width=0.5),
-        name='Фактический вклад',
-        text=[f'{c:.1f} %' for c in contribs],
-        textposition='outside',
-        textfont=dict(size=11, color='#333'),
-    ))
-    # Цветовые пояснения в легенде (невидимые бары — только для подписи)
-    for clr, lbl in [
-        ('#27ae60', 'показатель ≥ 80 % — хорошо'),
-        ('#f39c12', '50–80 % — удовлетворительно'),
-        ('#e74c3c', '< 50 % — неудовлетворительно'),
-    ]:
-        fig_bar.add_trace(go.Bar(
-            x=[None], y=[None],
-            marker_color=clr,
-            name=lbl,
-            showlegend=True,
-        ))
-    y_min = min(min(contribs) - 2, -1)
-    fig_bar.update_layout(
-        barmode='overlay',
-        yaxis=dict(range=[y_min, 23], title='Вклад в ИТСэф, %', gridcolor='#eee'),
-        xaxis=dict(tickfont=dict(size=11)),
-        legend=dict(orientation='h', y=-0.32, x=0.5, xanchor='center', font=dict(size=11)),
-        plot_bgcolor='white',
-        margin=dict(t=10, b=110, l=50, r=20),
-        height=340,
-    )
-    st.plotly_chart(fig_bar, use_container_width=True)
 
     st.divider()
     st.subheader("📄 Экспорт отчёта")
