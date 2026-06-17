@@ -318,6 +318,15 @@ st.set_page_config(
     layout="wide"
 )
 
+st.markdown("""
+<style>
+/* Вкладки «📋 Итог» — всегда последние в группе → жирный шрифт */
+[data-baseweb="tab-list"] button[role="tab"]:last-child p {
+    font-weight: 700 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # ── Session state ──────────────────────────────────────────────
 for k in ['S', 'Z', 'M', 'H', 'W_vid', 'P']:
     if k not in st.session_state:
