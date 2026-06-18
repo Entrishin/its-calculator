@@ -419,7 +419,7 @@ with st.sidebar:
     st.markdown(_gap, unsafe_allow_html=True)
 
     st.markdown("**Оцениваемый период времени**")
-    st.markdown(r"$\Delta T = T_2 - T_1$, суток")
+    st.caption("ΔT = T₂ − T₁, суток")
     st.session_state.setdefault("_dT", 90)
     st.session_state["_dT"] = st.number_input(
         "ΔT, суток", 1, 365, st.session_state["_dT"], key="_sb_dT",
