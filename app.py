@@ -379,21 +379,26 @@ def save_button(label, key, value):
         st.rerun()
 
 # ── Sidebar ────────────────────────────────────────────────────
+_gap = "<div style='margin-bottom:14px'></div>"
+
 with st.sidebar:
     st.title("🚦 Калькулятор оценки эффективности ИТС")
     st.caption("Евстигнеев И.А.")
-    st.markdown("<div style='margin-bottom:8px'></div>", unsafe_allow_html=True)
+    st.markdown(_gap, unsafe_allow_html=True)
 
+    st.markdown("**Название транспортного объекта**")
     st.session_state.setdefault("_obj_name", "")
     st.session_state["_obj_name"] = st.text_input(
         "Название транспортного объекта",
         value=st.session_state["_obj_name"],
-        placeholder="например: г. Белгород"
+        placeholder="например: г. Белгород",
+        label_visibility="collapsed",
     )
+    st.markdown(_gap, unsafe_allow_html=True)
 
+    st.markdown("**Оцениваемый период времени**")
     st.session_state.setdefault("_T2", 0)
     st.session_state.setdefault("_T1", 90)
-    st.markdown("**Оцениваемый период времени**")
     _col1, _col2 = st.columns(2)
     st.session_state["_T2"] = _col1.number_input("T₂ — начало, сут.", 0, 365,
                                                    st.session_state["_T2"], key="_sb_T2")
@@ -401,8 +406,10 @@ with st.sidebar:
                                                    st.session_state["_T1"], key="_sb_T1")
     _dT = st.session_state["_T1"] - st.session_state["_T2"]
     st.caption(f"ΔT = {_dT} суток")
+    st.markdown(_gap, unsafe_allow_html=True)
 
-    section = st.radio("Раздел:", [
+    st.markdown("**Раздел**")
+    section = st.radio("Раздел", [
         "I. Управление дорожным движением (светофорное управление)",
         "II. Безопасность дорожного движения",
         "III. Мониторинг транспортного потока",
@@ -410,15 +417,15 @@ with st.sidebar:
         "V. Видеонаблюдение и инциденты",
         "VI. Эффективность организации движения НГПТ",
         "VII. Сводная оценка эффективности ИТС",
-    ])
+    ], label_visibility="collapsed")
+    st.markdown(_gap, unsafe_allow_html=True)
 
-    st.divider()
+    st.markdown("**Прогресс**")
     saved_count = sum(1 for k in ['S', 'Z', 'M', 'H', 'W_vid', 'P']
                       if st.session_state[k] is not None)
-    st.subheader("Прогресс")
     st.progress(saved_count / 6)
     st.caption(f"Заполнено {saved_count} / 6 разделов")
-    st.markdown("<div style='margin-bottom:8px'></div>", unsafe_allow_html=True)
+    st.markdown(_gap, unsafe_allow_html=True)
 
     sidebar_labels = [
         ('S',     'S — Светофоры'),
