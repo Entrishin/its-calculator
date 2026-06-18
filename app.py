@@ -378,14 +378,6 @@ def save_button(label, key, value):
         st.toast(f"{label} = {value:.2f} % сохранён!", icon="✅")
         st.rerun()
 
-def dt_block(key_prefix):
-    with st.expander("Временной диапазон ΔT"):
-        st.latex(r"\Delta T = T_1 - T_2")
-        col1, col2 = st.columns(2)
-        T2 = col1.number_input("T₂ — начало (порядковый номер суток)", 0, 365, 0, key=f"{key_prefix}_T2")
-        T1 = col2.number_input("T₁ — конец (порядковый номер суток)",  1, 365, 90, key=f"{key_prefix}_T1")
-        st.metric("ΔT", f"{T1 - T2} суток")
-
 # ── Sidebar ────────────────────────────────────────────────────
 with st.sidebar:
     st.title("🚦 Калькулятор оценки эффективности ИТС")
@@ -398,6 +390,17 @@ with st.sidebar:
         value=st.session_state["_obj_name"],
         placeholder="например: г. Белгород"
     )
+
+    st.session_state.setdefault("_T2", 0)
+    st.session_state.setdefault("_T1", 90)
+    st.markdown("**Оцениваемый период времени**")
+    _col1, _col2 = st.columns(2)
+    st.session_state["_T2"] = _col1.number_input("T₂ — начало, сут.", 0, 365,
+                                                   st.session_state["_T2"], key="_sb_T2")
+    st.session_state["_T1"] = _col2.number_input("T₁ — конец, сут.",  1, 365,
+                                                   st.session_state["_T1"], key="_sb_T1")
+    _dT = st.session_state["_T1"] - st.session_state["_T2"]
+    st.caption(f"ΔT = {_dT} суток")
 
     section = st.radio("Раздел:", [
         "I. Управление дорожным движением (светофорное управление)",
@@ -621,7 +624,6 @@ if section.startswith("I. "):
         st.caption(grade(S))
         save_button("S", "S", S)
 
-    dt_block("s")
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -682,7 +684,6 @@ elif section.startswith("II. "):
     st.caption(grade(Z19))
     save_button("Z", "Z", Z19)
 
-    dt_block("z")
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -767,7 +768,6 @@ elif section.startswith("III. "):
         st.caption(grade(M))
         save_button("M", "M", M)
 
-    dt_block("m")
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -843,7 +843,6 @@ elif section.startswith("IV. "):
         st.caption(grade(H))
         save_button("H","H",H)
 
-    dt_block("h")
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -907,7 +906,6 @@ elif section.startswith("V. "):
         st.caption(grade(W_vid))
         save_button("W","W_vid",W_vid)
 
-    dt_block("w")
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -984,7 +982,6 @@ elif section.startswith("VI. "):
         st.caption(grade(P))
         save_button("P","P",P)
 
-    dt_block("p")
 
 
 # ══════════════════════════════════════════════════════════════════
