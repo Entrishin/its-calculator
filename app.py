@@ -1010,21 +1010,13 @@ elif section.startswith("VII. "):
             st.session_state[wk] = val
         st.rerun()
 
-    if not st.session_state.get("_confirm_reset"):
-        if _btn2.button("🗑 Сбросить все результаты", use_container_width=True, type="secondary"):
-            st.session_state["_confirm_reset"] = True
-            st.rerun()
-    else:
-        st.warning("Все введённые данные будут удалены. Продолжить?")
-        c1, c2 = st.columns(2)
-        if c1.button("✅ Да", use_container_width=True, type="primary"):
+    with _btn2.popover("🗑 Сбросить все результаты", use_container_width=True):
+        st.warning("Все введённые данные будут удалены.")
+        if st.button("✅ Подтвердить сброс", type="primary", use_container_width=True):
             for key in list(st.session_state.keys()):
                 del st.session_state[key]
             for wk in ['vS', 'vZ', 'vM', 'vH', 'vW', 'vP']:
                 st.session_state[wk] = 0.0
-            st.rerun()
-        if c2.button("❌ Отмена", use_container_width=True):
-            st.session_state["_confirm_reset"] = False
             st.rerun()
 
     def _sync(wk, sk):
