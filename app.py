@@ -181,11 +181,8 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     add_h("3 Итоговая оценка")
 
     p_res = add_p(sb=0, sa=0, align=WD_ALIGN_PARAGRAPH.LEFT)
-    for i, part in enumerate(f"ИТСэф = {ITS:.2f} % — {grade_text(ITS)}".split('\n')):
-        r = p_res.add_run(part)
-        _run(r, size=14, bold=True)
-        if i == 0:
-            r.add_break()
+    r = p_res.add_run(f"ИТСэф = {ITS:.2f} % — {grade_text(ITS).replace(chr(10), ' ')}")
+    _run(r, size=14, bold=True)
 
     buf = io.BytesIO()
     doc.save(buf)
