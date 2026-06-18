@@ -336,7 +336,7 @@ st.markdown("""
 <style>
 /* Убираем лишний отступ сверху в основной зоне */
 .main .block-container {
-    padding-top: 1.5rem !important;
+    padding-top: 0 !important;
 }
 /* Вкладки «📋 Итог» — всегда последние в группе → жирный шрифт */
 [data-baseweb="tab-list"] button[role="tab"]:last-child p {
