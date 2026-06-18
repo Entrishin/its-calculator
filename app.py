@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import io
+import random
 from datetime import datetime
 from docx import Document
 from docx.shared import Pt, Cm, RGBColor
@@ -451,9 +452,8 @@ with st.sidebar:
 
     st.markdown(_gap, unsafe_allow_html=True)
     if st.button("Заполнить тестовыми данными", use_container_width=True, type="secondary"):
-        test = {'S': 85.0, 'Z': 44.0, 'M': 78.0, 'H': 62.0, 'W_vid': 88.0, 'P': 71.0}
-        for k, v in test.items():
-            st.session_state[k] = v
+        for k in ['S', 'Z', 'M', 'H', 'W_vid', 'P']:
+            st.session_state[k] = round(random.uniform(10, 100), 2)
         st.rerun()
 
     if not st.session_state.get("_confirm_reset"):
