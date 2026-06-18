@@ -380,9 +380,14 @@ def grade(v):
     elif v <= 84: return "4 уровень зрелости"
     else:         return "5 уровень зрелости"
 
+# Маппинг: ключ session_state → ключ виджета в разделе VII
+_VII_KEYS = {'S': 'vS', 'Z': 'vZ', 'M': 'vM', 'H': 'vH', 'W_vid': 'vW', 'P': 'vP'}
+
 def save_button(label, key, value):
     if st.button(f"💾 Сохранить {label} для раздела VII", key=f"save_{key}"):
         st.session_state[key] = value
+        if key in _VII_KEYS:
+            st.session_state[_VII_KEYS[key]] = value
         st.toast(f"{label} = {value:.2f} % сохранён!", icon="✅")
         st.rerun()
 
@@ -452,8 +457,10 @@ with st.sidebar:
 
     st.markdown(_gap, unsafe_allow_html=True)
     if st.button("Заполнить тестовыми данными", use_container_width=True, type="secondary"):
-        for k in ['S', 'Z', 'M', 'H', 'W_vid', 'P']:
-            st.session_state[k] = round(random.uniform(10, 100), 2)
+        for k, wk in _VII_KEYS.items():
+            val = round(random.uniform(10, 100), 2)
+            st.session_state[k] = val
+            st.session_state[wk] = val
         st.rerun()
 
     if not st.session_state.get("_confirm_reset"):
@@ -1005,15 +1012,18 @@ elif section.startswith("VII. "):
     st.latex(r"\text{ИТС}_{\text{эф}} = 0{,}2\,S + 0{,}2\,Z + 0{,}1\,M + 0{,}1\,H + 0{,}2\,W + 0{,}2\,P")
     st.info("Введите значения вручную или используйте кнопки «Сохранить» в разделах I–VI — значения подставятся автоматически.")
 
+    def _sync(wk, sk):
+        st.session_state[sk] = st.session_state[wk]
+
     col1, col2 = st.columns(2)
     with col1:
-        S     = st.number_input("S — Светофорное управление, %",          -500.0, 500.0, float(st.session_state['S']     or 75.0), format="%.2f", key="vS")
-        Z     = st.number_input("Z — Безопасность дорожного движения, %", -500.0, 100.0, float(st.session_state['Z']     or 70.0), format="%.2f", key="vZ")
-        M     = st.number_input("M — Мониторинг транспортного потока, %",    0.0, 100.0, float(st.session_state['M']     or 85.0), format="%.2f", key="vM")
+        S     = st.number_input("S — Светофорное управление, %",          -500.0, 500.0, float(st.session_state['S']     or 75.0), format="%.2f", key="vS", on_change=_sync, args=("vS","S"))
+        Z     = st.number_input("Z — Безопасность дорожного движения, %", -500.0, 100.0, float(st.session_state['Z']     or 70.0), format="%.2f", key="vZ", on_change=_sync, args=("vZ","Z"))
+        M     = st.number_input("M — Мониторинг транспортного потока, %",    0.0, 100.0, float(st.session_state['M']     or 85.0), format="%.2f", key="vM", on_change=_sync, args=("vM","M"))
     with col2:
-        H     = st.number_input("H — Метеомониторинг, %",                   0.0, 100.0, float(st.session_state['H']     or 80.0), format="%.2f", key="vH")
-        W_vid = st.number_input("W — Видеонаблюдение, %",                   0.0, 100.0, float(st.session_state['W_vid'] or 78.0), format="%.2f", key="vW")
-        P     = st.number_input("P — НГПТ, %",          -500.0, 100.0, float(st.session_state['P']     or 72.0), format="%.2f", key="vP")
+        H     = st.number_input("H — Метеомониторинг, %",                   0.0, 100.0, float(st.session_state['H']     or 80.0), format="%.2f", key="vH", on_change=_sync, args=("vH","H"))
+        W_vid = st.number_input("W — Видеонаблюдение, %",                   0.0, 100.0, float(st.session_state['W_vid'] or 78.0), format="%.2f", key="vW", on_change=_sync, args=("vW","W_vid"))
+        P     = st.number_input("P — НГПТ, %",          -500.0, 100.0, float(st.session_state['P']     or 72.0), format="%.2f", key="vP", on_change=_sync, args=("vP","P"))
 
     st.divider()
     ITS = 0.2*S + 0.2*Z + 0.1*M + 0.1*H + 0.2*W_vid + 0.2*P
