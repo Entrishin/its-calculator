@@ -14,12 +14,9 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     doc = Document()
 
     def grade_text(v):
-        if v <= 19:   return "0 уровень зрелости"
-        elif v <= 39: return "1 уровень зрелости"
-        elif v <= 54: return "2 уровень зрелости"
-        elif v <= 69: return "3 уровень зрелости"
-        elif v <= 84: return "4 уровень зрелости"
-        else:         return "5 уровень зрелости"
+        if v >= 80:   return "Хорошо (≥ 80 %)"
+        elif v >= 50: return "Удовлетворительно (50–80 %)"
+        else:         return "Неудовлетворительно (< 50 %)"
 
     def _run(run, size=14, bold=False, italic=False):
         run.font.name = "Times New Roman"
@@ -194,12 +191,9 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     from fpdf import FPDF
 
     def grade_text(v):
-        if v <= 19:   return "0 уровень зрелости"
-        elif v <= 39: return "1 уровень зрелости"
-        elif v <= 54: return "2 уровень зрелости"
-        elif v <= 69: return "3 уровень зрелости"
-        elif v <= 84: return "4 уровень зрелости"
-        else:         return "5 уровень зрелости"
+        if v >= 80:   return "Хорошо (>= 80 %)"
+        elif v >= 50: return "Удовлетворительно (50-80 %)"
+        else:         return "Неудовлетворительно (< 50 %)"
 
     def find_font(bold=False):
         variants = ["DejaVuSans-Bold.ttf", "DejaVuSans.ttf"] if bold else ["DejaVuSans.ttf"]
@@ -372,13 +366,18 @@ for k in ['S', 'Z', 'M', 'H', 'W_vid', 'P']:
         st.session_state[k] = None
 
 # ── Helpers ────────────────────────────────────────────────────
-def grade(v):
+def grade_maturity(v):
     if v <= 19:   return "0 уровень зрелости"
     elif v <= 39: return "1 уровень зрелости"
     elif v <= 54: return "2 уровень зрелости"
     elif v <= 69: return "3 уровень зрелости"
     elif v <= 84: return "4 уровень зрелости"
     else:         return "5 уровень зрелости"
+
+def grade(v):
+    if v >= 80:   return "Хорошо (≥ 80 %)"
+    elif v >= 50: return "Удовлетворительно (50–80 %)"
+    else:         return "Неудовлетворительно (< 50 %)"
 
 # Маппинг: ключ session_state → ключ виджета в разделе VII
 _VII_KEYS = {'S': 'vS', 'Z': 'vZ', 'M': 'vM', 'H': 'vH', 'W_vid': 'vW', 'P': 'vP'}
@@ -521,7 +520,7 @@ if section.startswith("I. "):
         st.divider()
         st.metric("🎯 S₁", f"{s1:.2f} %",
                   help="Уровень зрелости по доле светофоров с адаптивным и диспетчерским управлением. Формула (3).")
-        st.caption(grade(s1))
+        st.caption(grade_maturity(s1))
 
     # ── S2 ──
     with t2:
@@ -614,7 +613,7 @@ if section.startswith("I. "):
             s3 = 0.0
         st.metric("🎯 S₃", f"{s3:.2f} %",
                   help="≥ 80 % — хорошо; 50–80 % — удовлетворительно; < 50 % — неудовлетворительно. Формула (11) или (12).")
-        st.caption(grade(s3))
+        st.caption(grade_maturity(s3))
 
     # ── S4 ──
     with t4:
@@ -627,7 +626,7 @@ if section.startswith("I. "):
         st.divider()
         st.metric("🎯 S₄", f"{s4:.2f} %",
                   help="≥ 80 % — хорошо; 50–80 % — удовлетворительно; < 50 % — неудовлетворительно. Формула (15).")
-        st.caption(grade(s4))
+        st.caption(grade_maturity(s4))
 
     # ── Итог S ──
     with t5:
@@ -643,7 +642,7 @@ if section.startswith("I. "):
         st.markdown(f"S = 0,4 × {s1:.2f} + 0,2 × {s2:.2f} + 0,2 × {s3:.2f} + 0,2 × {s4:.2f} = **{S:.2f} %**")
         st.metric("🏆 S — Светофорное управление", f"{S:.2f} %",
                   help="Формула (2). Вес в ИТСэф: 0,20. ≥ 80 % — хорошо; 50–80 % — удовлетворительно; < 50 % — неудовлетворительно.")
-        st.caption(grade(S))
+        st.caption(grade_maturity(S))
         save_button("S", "S", S)
 
 
