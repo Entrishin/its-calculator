@@ -2,7 +2,7 @@
 import pandas as pd
 import io
 import random
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from docx import Document
 from docx.shared import Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -427,12 +427,20 @@ with st.sidebar:
     st.markdown(_gap, unsafe_allow_html=True)
 
     st.markdown("**Оцениваемый период времени**")
-    st.caption("ΔT = T₂ − T₁, сут.")
-    st.session_state.setdefault("_dT", 90)
-    st.session_state["_dT"] = st.number_input(
-        "ΔT, суток", 1, 365, st.session_state["_dT"], key="_sb_dT",
-        label_visibility="collapsed"
+    _dates = st.date_input(
+        "Период оценки",
+        value=(date.today() - timedelta(days=90), date.today()),
+        label_visibility="collapsed",
+        key="_sb_dates",
+        format="DD.MM.YYYY",
     )
+    if isinstance(_dates, (list, tuple)) and len(_dates) == 2:
+        _dT = max(1, (_dates[1] - _dates[0]).days)
+        st.session_state["_dT"] = _dT
+        st.caption(f"ΔT = {_dT} сут.")
+    else:
+        st.session_state.setdefault("_dT", 90)
+        st.caption("Выберите конечную дату")
     st.markdown(_gap, unsafe_allow_html=True)
 
     st.markdown("**Раздел**")
