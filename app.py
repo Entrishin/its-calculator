@@ -8,7 +8,7 @@ from docx.shared import Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 import plotly.graph_objects as go
 
-def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
+def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name="", period=""):
     from docx.oxml.ns import qn
     from docx.oxml import OxmlElement
     doc = Document()
@@ -97,7 +97,9 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
         add_p(obj_name, size=13, align=WD_ALIGN_PARAGRAPH.CENTER, sa=2)
 
     add_p(f"Дата формирования отчёта: {datetime.now().strftime('%d.%m.%Y  %H:%M')}",
-          size=12, align=WD_ALIGN_PARAGRAPH.LEFT, sa=6)
+          size=12, align=WD_ALIGN_PARAGRAPH.LEFT, sa=2)
+    if period:
+        add_p(f"Оцениваемый период: {period}", size=12, align=WD_ALIGN_PARAGRAPH.LEFT, sa=6)
 
     # ═══════════════════════════════════════════════
     # Раздел 1: Таблица
@@ -190,7 +192,7 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     return buf
 
 
-def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
+def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name="", period=""):
     import os
     from fpdf import FPDF
 
@@ -241,7 +243,11 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     pdf.ln(4)
     pdf.set_font(fname, "", 12)
     pdf.cell(0, 6, f"Дата: {datetime.now().strftime('%d.%m.%Y  %H:%M')}")
-    pdf.ln(10)
+    pdf.ln()
+    if period:
+        pdf.cell(0, 6, f"Оцениваемый период: {period}")
+        pdf.ln()
+    pdf.ln(4)
 
     # ── Раздел 1: Таблица ──
     pdf.set_font(fname, "B", 13)
@@ -1230,9 +1236,17 @@ elif section.startswith("VII. "):
     st.divider()
     st.subheader("📄 Экспорт отчёта")
     stamp = datetime.now().strftime('%d%m%Y')
+    _dates = st.session_state.get("_sb_dates")
+    if isinstance(_dates, (list, tuple)) and len(_dates) == 2:
+        _dT = max(1, (_dates[1] - _dates[0]).days)
+        _period_str = f"{_dates[0].strftime('%d.%m.%Y')} — {_dates[1].strftime('%d.%m.%Y')} (ΔT = {_dT} сут.)"
+    else:
+        _period_str = ""
     col_w, col_p = st.columns(2)
     with col_w:
-        word_buf = generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=st.session_state.get("_obj_name", ""))
+        word_buf = generate_word_report(S, Z, M, H, W_vid, P, ITS,
+                                        obj_name=st.session_state.get("_obj_name", ""),
+                                        period=_period_str)
         st.download_button(
             label="⬇️ Скачать Word (.docx)",
             data=word_buf,
@@ -1241,7 +1255,9 @@ elif section.startswith("VII. "):
             use_container_width=True,
         )
     with col_p:
-        pdf_buf = generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=st.session_state.get("_obj_name", ""))
+        pdf_buf = generate_pdf_report(S, Z, M, H, W_vid, P, ITS,
+                                      obj_name=st.session_state.get("_obj_name", ""),
+                                      period=_period_str)
         st.download_button(
             label="⬇️ Скачать PDF (.pdf)",
             data=pdf_buf,
