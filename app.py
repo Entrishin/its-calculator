@@ -462,29 +462,6 @@ with st.sidebar:
             st.caption(f"⬜ {lbl}: не заполнен")
 
     st.markdown(_gap, unsafe_allow_html=True)
-    if st.button("Заполнить тестовыми данными", use_container_width=True, type="secondary"):
-        for k, wk in _VII_KEYS.items():
-            val = round(random.uniform(10, 100), 2)
-            st.session_state[k] = val
-            st.session_state[wk] = val
-        st.rerun()
-
-    if not st.session_state.get("_confirm_reset"):
-        if st.button("Сбросить все сохранённые результаты", use_container_width=True, type="secondary"):
-            st.session_state["_confirm_reset"] = True
-            st.rerun()
-    else:
-        st.warning("Все введённые данные будут удалены. Продолжить?")
-        c1, c2 = st.columns(2)
-        if c1.button("✅ Да", use_container_width=True, type="primary"):
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            for wk in ['vS', 'vZ', 'vM', 'vH', 'vW', 'vP']:
-                st.session_state[wk] = 0.0
-            st.rerun()
-        if c2.button("❌ Отмена", use_container_width=True):
-            st.session_state["_confirm_reset"] = False
-            st.rerun()
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -1020,6 +997,31 @@ elif section.startswith("VII. "):
     st.header("VII. Сводная оценка эффективности ИТС")
     st.latex(r"\text{ИТС}_{\text{эф}} = 0{,}2\,S + 0{,}2\,Z + 0{,}1\,M + 0{,}1\,H + 0{,}2\,W + 0{,}2\,P")
     st.info("Введите значения вручную или используйте кнопки «Сохранить» в разделах I–VI — значения подставятся автоматически.")
+
+    _btn1, _btn2 = st.columns(2)
+    if _btn1.button("🎲 Заполнить тестовыми данными", use_container_width=True, type="secondary"):
+        for k, wk in _VII_KEYS.items():
+            val = round(random.uniform(10, 100), 2)
+            st.session_state[k] = val
+            st.session_state[wk] = val
+        st.rerun()
+
+    if not st.session_state.get("_confirm_reset"):
+        if _btn2.button("🗑 Сбросить все результаты", use_container_width=True, type="secondary"):
+            st.session_state["_confirm_reset"] = True
+            st.rerun()
+    else:
+        st.warning("Все введённые данные будут удалены. Продолжить?")
+        c1, c2 = st.columns(2)
+        if c1.button("✅ Да", use_container_width=True, type="primary"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            for wk in ['vS', 'vZ', 'vM', 'vH', 'vW', 'vP']:
+                st.session_state[wk] = 0.0
+            st.rerun()
+        if c2.button("❌ Отмена", use_container_width=True):
+            st.session_state["_confirm_reset"] = False
+            st.rerun()
 
     def _sync(wk, sk):
         st.session_state[sk] = st.session_state[wk]
