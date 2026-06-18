@@ -14,9 +14,9 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     doc = Document()
 
     def grade_text(v):
-        if v >= 80:   return "Хорошо (≥ 80 %)"
-        elif v >= 50: return "Удовлетворительно (50–80 %)"
-        else:         return "Неудовлетворительно (< 50 %)"
+        if v >= 80:   return "Хорошо\n(≥ 80 %)"
+        elif v >= 50: return "Удовлетворительно\n(50–80 %)"
+        else:         return "Неудовлетворительно\n(< 50 %)"
 
     def _run(run, size=14, bold=False, italic=False):
         run.font.name = "Times New Roman"
@@ -61,8 +61,12 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
         pf.space_before = Pt(3)
         pf.space_after  = Pt(3)
         pf.line_spacing = Pt(13)  # точный одинарный
-        r = para.add_run(text)
-        _run(r, size=size, bold=bold)
+        parts = text.split('\n')
+        for i, part in enumerate(parts):
+            r = para.add_run(part)
+            _run(r, size=size, bold=bold)
+            if i < len(parts) - 1:
+                r.add_break()
 
     def thick_cell(cell, idx):
         """Жирные рамки 1,5 пт + ширина столбца."""
