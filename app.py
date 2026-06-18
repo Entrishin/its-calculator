@@ -419,15 +419,10 @@ with st.sidebar:
     st.markdown(_gap, unsafe_allow_html=True)
 
     st.markdown("**Оцениваемый период времени**")
-    st.session_state.setdefault("_T2", 0)
-    st.session_state.setdefault("_T1", 90)
-    _col1, _col2 = st.columns(2)
-    st.session_state["_T2"] = _col1.number_input("T₂ — начало, сут.", 0, 365,
-                                                   st.session_state["_T2"], key="_sb_T2")
-    st.session_state["_T1"] = _col2.number_input("T₁ — конец, сут.",  1, 365,
-                                                   st.session_state["_T1"], key="_sb_T1")
-    _dT = st.session_state["_T1"] - st.session_state["_T2"]
-    st.caption(f"ΔT = {_dT} суток")
+    st.session_state.setdefault("_dT", 90)
+    st.session_state["_dT"] = st.number_input(
+        "ΔT, суток", 1, 365, st.session_state["_dT"], key="_sb_dT"
+    )
     st.markdown(_gap, unsafe_allow_html=True)
 
     st.markdown("**Раздел**")
