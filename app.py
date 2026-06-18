@@ -339,24 +339,49 @@ st.markdown("""
     font-weight: 700 !important;
 }
 /* Компактный сайдбар */
+[data-testid="stSidebarContent"] {
+    padding-top: 0.25rem !important;
+}
 section[data-testid="stSidebar"] .stMarkdown p,
 section[data-testid="stSidebar"] .stCaption p {
-    margin-bottom: 2px !important;
-    line-height: 1.3 !important;
+    margin-bottom: 1px !important;
+    line-height: 1.25 !important;
+    font-size: 0.82rem !important;
 }
 section[data-testid="stSidebar"] h3 {
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    font-size: 1rem !important;
+}
+section[data-testid="stSidebar"] hr {
     margin-top: 4px !important;
     margin-bottom: 4px !important;
 }
-section[data-testid="stSidebar"] hr {
-    margin-top: 6px !important;
-    margin-bottom: 6px !important;
-}
 section[data-testid="stSidebar"] [data-testid="stProgressBar"] {
-    margin-bottom: 2px !important;
+    margin-bottom: 1px !important;
 }
-[data-testid="stSidebarContent"] {
-    padding-top: 0.5rem !important;
+section[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    font-size: 0.82rem !important;
+    line-height: 1.2 !important;
+}
+section[data-testid="stSidebar"] [data-testid="stRadio"] > label {
+    display: none !important;
+}
+section[data-testid="stSidebar"] .stTextInput input,
+section[data-testid="stSidebar"] .stNumberInput input {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    font-size: 0.82rem !important;
+}
+section[data-testid="stSidebar"] .stNumberInput [data-testid="stNumberInputContainer"] {
+    margin-bottom: 0 !important;
+}
+section[data-testid="stSidebar"] .stButton button {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    font-size: 0.82rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -382,10 +407,10 @@ def save_button(label, key, value):
         st.rerun()
 
 # ── Sidebar ────────────────────────────────────────────────────
-_gap = "<hr style='border:none;border-top:1px solid #d4d4d4;margin:12px 0 14px 0'>"
+_gap = "<hr style='border:none;border-top:1px solid #d4d4d4;margin:6px 0 8px 0'>"
 
 with st.sidebar:
-    st.title("🚦 Калькулятор оценки эффективности ИТС")
+    st.markdown("### 🚦 Калькулятор оценки эффективности ИТС")
     st.caption("Евстигнеев И.А.")
     st.markdown(_gap, unsafe_allow_html=True)
 
@@ -437,13 +462,15 @@ with st.sidebar:
         ('W_vid', 'W — Видео'),
         ('P',     'P — НГПТ'),
     ]
-    for k, lbl in sidebar_labels:
+    _sc1, _sc2 = st.columns(2)
+    for i, (k, lbl) in enumerate(sidebar_labels):
+        col = _sc1 if i % 2 == 0 else _sc2
         v = st.session_state[k]
         if v is not None:
             icon = "🟢" if v >= 80 else ("🟡" if v >= 50 else "🔴")
-            st.write(f"{icon} **{lbl}:** {v:.2f} %")
+            col.caption(f"{icon} **{lbl}:** {v:.2f} %")
         else:
-            st.caption(f"⬜ {lbl}: не заполнен")
+            col.caption(f"⬜ {lbl}")
 
     st.markdown(_gap, unsafe_allow_html=True)
     if st.button("Заполнить тестовыми данными", use_container_width=True, type="secondary"):
