@@ -330,7 +330,7 @@ st.set_page_config(
 st.markdown("""
 <style>
 /* Глобальный шрифт */
-html, body, [class*="css"], .stMarkdown, .stText, p, span, div, label, button {
+html, body, [class*="css"], .stMarkdown, .stText, p, label {
     font-family: 'Source Sans Pro', 'Source Sans 3', sans-serif !important;
 }
 /* Убираем лишний отступ сверху в основной зоне */
