@@ -117,7 +117,7 @@ def generate_word_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     tblPr.append(tblLayout)
 
     hdr = table.rows[0].cells
-    for i, txt in enumerate(["Комплексные показатели", "Показатель", "Значение, %", "Оценка"]):
+    for i, txt in enumerate(["Комплексные показатели", "Обозн.", "Значение, %", "Оценка"]):
         set_cell(hdr[i], txt, align=WD_ALIGN_PARAGRAPH.CENTER, bold=True)
         thick_cell(hdr[i], i)
 
@@ -250,10 +250,10 @@ def generate_pdf_report(S, Z, M, H, W_vid, P, ITS, obj_name=""):
     pdf.ln(2)  # дополнительный отступ
 
     # Ширины: 170 мм = 25 левое поле; A4 = 210; правое = 15 → контент 170 мм
-    cw = [64, 12, 26, 68]
+    cw = [60, 16, 26, 68]
     lh = 6  # высота строки в мм
     pdf.set_font(fname, "B", 10)
-    for txt, w in zip(["Комплексные показатели", "Пок.", "Значение, %", "Оценка"], cw):
+    for txt, w in zip(["Комплексные показатели", "Обозн.", "Значение, %", "Оценка"], cw):
         pdf.cell(w, 8, txt, border=1, align="C")
     pdf.ln()
 
