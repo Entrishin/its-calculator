@@ -473,6 +473,8 @@ with st.sidebar:
         if c1.button("✅ Да", use_container_width=True, type="primary"):
             for key in list(st.session_state.keys()):
                 del st.session_state[key]
+            for wk in ['vS', 'vZ', 'vM', 'vH', 'vW', 'vP']:
+                st.session_state[wk] = 0.0
             st.rerun()
         if c2.button("❌ Отмена", use_container_width=True):
             st.session_state["_confirm_reset"] = False
