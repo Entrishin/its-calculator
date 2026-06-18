@@ -704,8 +704,9 @@ elif section.startswith("II. "):
         N     = col2.number_input("N — суточная интенсивность, авт./сут", 1.0, 1e7, 10000.0)
 
     st.divider()
-    alpha = st.number_input("α — вес погибших (рекомендовано: 5)", 0.0, 100.0, 5.0)
-    beta  = st.number_input("β — вес раненых (рекомендовано: 1)",  0.0, 100.0, 1.0)
+    _ca, _cb = st.columns(2)
+    alpha = _ca.number_input("α — вес погибших (рекомендовано: 5)", 0.0, 100.0, 5.0)
+    beta  = _cb.number_input("β — вес раненых (рекомендовано: 1)",  0.0, 100.0, 1.0)
     denom = L * N
     numer = A_dtp + alpha * D + beta * W_inj
     Z19 = (1 - numer / denom) * 100 if denom > 0 else 0.0
