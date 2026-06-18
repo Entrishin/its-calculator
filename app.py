@@ -355,8 +355,8 @@ section[data-testid="stSidebar"] hr {
 section[data-testid="stSidebar"] [data-testid="stProgressBar"] {
     margin-bottom: 2px !important;
 }
-section[data-testid="stSidebar"] > div:first-child {
-    padding-top: 12px !important;
+[data-testid="stSidebarContent"] {
+    padding-top: 0.5rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
