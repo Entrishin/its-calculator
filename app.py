@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import pandas as pd
 import io
 import random
@@ -379,6 +379,16 @@ def grade(v):
     elif v >= 50: return "Удовлетворительно (50–80 %)"
     else:         return "Неудовлетворительно (< 50 %)"
 
+def grade_md(v):
+    if v >= 80:
+        color, text = "#3A7D44", "Хорошо (≥ 80 %)"
+    elif v >= 50:
+        color, text = "#B07D2A", "Удовлетворительно (50–80 %)"
+    else:
+        color, text = "#B03A2E", "Неудовлетворительно (< 50 %)"
+    st.markdown(f"<small style='color:{color};font-weight:500'>{text}</small>",
+                unsafe_allow_html=True)
+
 # Маппинг: ключ session_state → ключ виджета в разделе VII
 _VII_KEYS = {'S': 'vS', 'Z': 'vZ', 'M': 'vM', 'H': 'vH', 'W_vid': 'vW', 'P': 'vP'}
 
@@ -702,7 +712,7 @@ elif section.startswith("II. "):
     st.markdown(f"Z = (1 − ({A_dtp} + {alpha}×{D} + {beta}×{W_inj}) / ({L}×{N:.0f})) × 100 % = **{Z19:.2f} %**")
     st.metric("🏆 Z — Безопасность дорожного движения", f"{Z19:.2f} %",
               help="Адаптированная формула по ОДМ 218.6.027-2017. Вес в ИТСэф: 0,20.")
-    st.caption(grade(Z19))
+    grade_md(Z19)
     save_button("Z", "Z", Z19)
 
 
@@ -736,7 +746,7 @@ elif section.startswith("III. "):
             st.metric("M₁.₂", f"{m12:.2f} %")
         n_meth = st.selectbox("n — число методов сбора данных", [1, 2], index=1, key="n_meth")
         m1 = (m11 + m12) / n_meth
-        st.divider(); st.metric("🎯 M₁", f"{m1:.2f} %"); st.caption(grade(m1))
+        st.divider(); st.metric("🎯 M₁", f"{m1:.2f} %"); grade_md(m1)
 
     with t2:
         st.subheader("M₂ — Достоверность данных")
@@ -745,7 +755,7 @@ elif section.startswith("III. "):
         c_m  = col1.number_input("c — суток без аномальных данных", 0, 365, 88)
         d_m2 = col2.number_input("d — контрольных суток",           1, 365, 90, key="d_m2")
         m2 = (c_m / d_m2) * 100
-        st.divider(); st.metric("🎯 M₂", f"{m2:.2f} %"); st.caption(grade(m2))
+        st.divider(); st.metric("🎯 M₂", f"{m2:.2f} %"); grade_md(m2)
 
     with t3:
         st.subheader("M₃ — Полнота охвата мониторингом")
@@ -754,7 +764,7 @@ elif section.startswith("III. "):
         b_m3 = col1.number_input("b — точек мониторинга фактически, шт.", 0, 100000, 45)
         f_m3 = col2.number_input("f — точек мониторинга требуется, шт.",  1, 100000, 50)
         m3 = (b_m3 / f_m3) * 100
-        st.divider(); st.metric("🎯 M₃", f"{m3:.2f} %"); st.caption(grade(m3))
+        st.divider(); st.metric("🎯 M₃", f"{m3:.2f} %"); grade_md(m3)
 
     with t4:
         st.subheader("M₄ — Полнота аналитической обработки")
@@ -764,7 +774,7 @@ elif section.startswith("III. "):
         g_m  = col1.number_input("g — суток с полной аналитикой", 0, 365, 80)
         d_m4 = col2.number_input("d — контрольных суток",         1, 365, 90, key="d_m4")
         m4 = (g_m / d_m4) * 100
-        st.divider(); st.metric("🎯 M₄", f"{m4:.2f} %"); st.caption(grade(m4))
+        st.divider(); st.metric("🎯 M₄", f"{m4:.2f} %"); grade_md(m4)
 
     with t5:
         st.subheader("M₅ — Оперативность передачи данных в АСУДД")
@@ -773,7 +783,7 @@ elif section.startswith("III. "):
         n_m5 = col1.number_input("n — суток с оперативной передачей всех изменений", 0, 365, 87)
         d_m5 = col2.number_input("d — контрольных суток",                            1, 365, 90, key="d_m5")
         m5 = (n_m5 / d_m5) * 100
-        st.divider(); st.metric("🎯 M₅", f"{m5:.2f} %"); st.caption(grade(m5))
+        st.divider(); st.metric("🎯 M₅", f"{m5:.2f} %"); grade_md(m5)
 
     with t6:
         st.subheader("Итоговый показатель M")
@@ -786,7 +796,7 @@ elif section.startswith("III. "):
         st.markdown(f"M = 0,3×{m1:.2f} + 0,3×{m2:.2f} + 0,1×{m3:.2f} + 0,1×{m4:.2f} + 0,2×{m5:.2f} = **{M:.2f} %**")
         st.metric("🏆 M — Мониторинг транспортного потока", f"{M:.2f} %",
                   help="Формула (25). Вес в ИТСэф: 0,10. ≥ 80 % — хорошо; 50–80 % — удовлетворительно; < 50 % — неудовлетворительно.")
-        st.caption(grade(M))
+        grade_md(M)
         save_button("M", "M", M)
 
 
@@ -806,7 +816,7 @@ elif section.startswith("IV. "):
         col1,col2=st.columns(2)
         a_h=col1.number_input("a — работоспособных АДМС, шт.",1,100000,9)
         b_h=col2.number_input("b — всего АДМС, шт.",           1,100000,10)
-        h1=(a_h/b_h)*100; st.metric("🎯 H₁",f"{h1:.2f} %"); st.caption(grade(h1))
+        h1=(a_h/b_h)*100; st.metric("🎯 H₁",f"{h1:.2f} %"); grade_md(h1)
 
     with t2:
         st.subheader("H₂ — Полнота охвата метеонаблюдением")
@@ -814,7 +824,7 @@ elif section.startswith("IV. "):
         col1,col2=st.columns(2)
         c_h=col1.number_input("c — мест дислокации АДМС фактически", 0,100000,8)
         d_h=col2.number_input("d — мест, где необходим метеомониторинг",1,100000,10)
-        h2=(c_h/d_h)*100; st.metric("🎯 H₂",f"{h2:.2f} %"); st.caption(grade(h2))
+        h2=(c_h/d_h)*100; st.metric("🎯 H₂",f"{h2:.2f} %"); grade_md(h2)
 
     with t3:
         st.subheader("H₃ — Качество аналитической обработки метеоданных")
@@ -823,7 +833,7 @@ elif section.startswith("IV. "):
         col1,col2=st.columns(2)
         f_h =col1.number_input("f — суток с метеопрогнозом по базовым параметрам",0,365,88)
         k_h3=col2.number_input("k — контрольных суток",1,365,90,key="k_h3")
-        h3=(f_h/k_h3)*100; st.metric("🎯 H₃",f"{h3:.2f} %"); st.caption(grade(h3))
+        h3=(f_h/k_h3)*100; st.metric("🎯 H₃",f"{h3:.2f} %"); grade_md(h3)
 
     with t4:
         st.subheader("H₄ — Интеграция с внешними информационными системами")
@@ -831,7 +841,7 @@ elif section.startswith("IV. "):
         col1,col2=st.columns(2)
         j_h =col1.number_input("j — суток с передачей данных во внешние системы",0,365,85)
         k_h4=col2.number_input("k — контрольных суток",1,365,90,key="k_h4")
-        h4=(j_h/k_h4)*100; st.metric("🎯 H₄",f"{h4:.2f} %"); st.caption(grade(h4))
+        h4=(j_h/k_h4)*100; st.metric("🎯 H₄",f"{h4:.2f} %"); grade_md(h4)
 
     with t5:
         st.subheader("H₅ — Своевременность информирования эксплуатационных служб")
@@ -840,7 +850,7 @@ elif section.startswith("IV. "):
         col1,col2=st.columns(2)
         l_h =col1.number_input("l — суток со своевременным информированием служб",0,365,87)
         k_h5=col2.number_input("k — контрольных суток",1,365,90,key="k_h5")
-        h5=(l_h/k_h5)*100; st.metric("🎯 H₅",f"{h5:.2f} %"); st.caption(grade(h5))
+        h5=(l_h/k_h5)*100; st.metric("🎯 H₅",f"{h5:.2f} %"); grade_md(h5)
 
     with t6:
         st.subheader("H₆ — Своевременность информирования участников дорожного движения")
@@ -848,7 +858,7 @@ elif section.startswith("IV. "):
         col1,col2=st.columns(2)
         n_h =col1.number_input("n — суток со своевременным информированием ДД",0,365,86)
         k_h6=col2.number_input("k — контрольных суток",1,365,90,key="k_h6")
-        h6=(n_h/k_h6)*100; st.metric("🎯 H₆",f"{h6:.2f} %"); st.caption(grade(h6))
+        h6=(n_h/k_h6)*100; st.metric("🎯 H₆",f"{h6:.2f} %"); grade_md(h6)
 
     with t7:
         st.subheader("Итоговый показатель H")
@@ -861,7 +871,7 @@ elif section.startswith("IV. "):
         st.markdown(f"H = 0,3×{h1:.2f} + 0,1×{h2:.2f} + 0,1×{h3:.2f} + 0,1×{h4:.2f} + 0,2×{h5:.2f} + 0,2×{h6:.2f} = **{H:.2f} %**")
         st.metric("🏆 H — Метеомониторинг", f"{H:.2f} %",
                   help="Формула (34). Вес в ИТСэф: 0,10. ≥ 80 % — хорошо; 50–80 % — удовлетворительно; < 50 % — неудовлетворительно.")
-        st.caption(grade(H))
+        grade_md(H)
         save_button("H","H",H)
 
 
@@ -883,7 +893,7 @@ elif section.startswith("V. "):
         b_w=col2.number_input("b — всего видеокамер, шт.",           1,1000000,100)
         w1=(a_w/b_w)*100
         st.caption("Условие: качество изображения соответствует проектной документации и паспорту оборудования")
-        st.metric("🎯 W₁",f"{w1:.2f} %"); st.caption(grade(w1))
+        st.metric("🎯 W₁",f"{w1:.2f} %"); grade_md(w1)
 
     with t2:
         st.subheader("W₂ — Полнота охвата видеонаблюдением")
@@ -891,7 +901,7 @@ elif section.startswith("V. "):
         col1,col2=st.columns(2)
         c_w=col1.number_input("c — мест дислокации видеокамер",       0,1000000,80)
         d_w=col2.number_input("d — мест, где необходимо видеонаблюдение",1,1000000,100)
-        w2=(c_w/d_w)*100; st.metric("🎯 W₂",f"{w2:.2f} %"); st.caption(grade(w2))
+        w2=(c_w/d_w)*100; st.metric("🎯 W₂",f"{w2:.2f} %"); grade_md(w2)
 
     with t3:
         st.subheader("W₃ — Аналитическая обработка видео")
@@ -901,7 +911,7 @@ elif section.startswith("V. "):
         b_w3=col2.number_input("b — всего видеокамер, шт.",       1,1000000,100,key="b_w3")
         w3=(e_w/b_w3)*100
         st.caption("Аналитика должна включать: остановившиеся ТС, встречное движение, резкое торможение, пешеходы, упавшие объекты, классификация ТС")
-        st.metric("🎯 W₃",f"{w3:.2f} %"); st.caption(grade(w3))
+        st.metric("🎯 W₃",f"{w3:.2f} %"); grade_md(w3)
 
     with t4:
         st.subheader("W₄ — Готовность к ликвидации последствий инцидентов")
@@ -911,7 +921,7 @@ elif section.startswith("V. "):
         k_w=col2.number_input("k — всего выявленных инцидентов",                      1,1000000,50)
         w4=(j_w/k_w)*100
         st.caption("Условие: разработаны и применяются нормативные документы о сроках ликвидации инцидентов")
-        st.metric("🎯 W₄",f"{w4:.2f} %"); st.caption(grade(w4))
+        st.metric("🎯 W₄",f"{w4:.2f} %"); grade_md(w4)
 
     with t5:
         st.subheader("Итоговый показатель W — Видеонаблюдение")
@@ -924,7 +934,7 @@ elif section.startswith("V. "):
         st.markdown(f"W = 0,3×{w1:.2f} + 0,2×{w2:.2f} + 0,2×{w3:.2f} + 0,3×{w4:.2f} = **{W_vid:.2f} %**")
         st.metric("🏆 W — Видеонаблюдение и инциденты", f"{W_vid:.2f} %",
                   help="Формула (42). Вес в ИТСэф: 0,20. ≥ 80 % — хорошо; 50–80 % — удовлетворительно; < 50 % — неудовлетворительно.")
-        st.caption(grade(W_vid))
+        grade_md(W_vid)
         save_button("W","W_vid",W_vid)
 
 
@@ -946,7 +956,7 @@ elif section.startswith("VI. "):
         V2=col1.number_input("V₂ — средняя скорость НГПТ текущий период, км/ч",0.1,300.0,20.0)
         Vm=col2.number_input("Vм — максимальная скорость НГПТ на участке, км/ч",0.1,300.0,40.0)
         p1=(V2/Vm)*100
-        st.metric("🎯 P₁",f"{p1:.2f} %"); st.caption(grade(p1))
+        st.metric("🎯 P₁",f"{p1:.2f} %"); grade_md(p1)
         with st.expander("Дополнительный показатель P₁к (для местного уровня)"):
             st.latex(r"P_{1к}=\frac{V_2}{V_1}\times 100\%")
             V1=st.number_input("V₁ — скорость за предыдущий период, км/ч",0.1,300.0,18.0)
@@ -964,7 +974,7 @@ elif section.startswith("VI. "):
         st.metric("r₂",f"{r2:.4f}")
         rm=st.number_input("rм — максимально возможное соотношение (обычно = 1,0)",0.01,1.0,1.0,format="%.2f")
         p2=(r2/rm)*100
-        st.metric("🎯 P₂",f"{p2:.2f} %"); st.caption(grade(p2))
+        st.metric("🎯 P₂",f"{p2:.2f} %"); grade_md(p2)
         with st.expander("Дополнительный показатель P₂к (для местного уровня)"):
             st.latex(r"P_{2к}=\frac{r_2}{r_1}\times 100\%")
             r1=st.number_input("r₁ — соотношение за предыдущий период",0.01,1.0,0.80,format="%.4f")
@@ -984,7 +994,7 @@ elif section.startswith("VI. "):
             p3=(1-e2/eb)*100
             st.caption("Формула (55): eб < e₂ — пассажиропоток выше базового")
             st.warning("Отрицательный P₃ означает: провозная способность не справляется с пассажиропотоком (переполненность)")
-        st.metric("🎯 P₃",f"{p3:.2f} %"); st.caption(grade(p3))
+        st.metric("🎯 P₃",f"{p3:.2f} %"); grade_md(p3)
         with st.expander("Дополнительный показатель P₃к (для местного уровня)"):
             st.latex(r"P_{3к}=\frac{e_2}{e_1}\times 100\%")
             e1=st.number_input("e₁ — пассажиропоток предыдущий период, чел.",1,100000000,90000)
@@ -1000,7 +1010,7 @@ elif section.startswith("VI. "):
         st.markdown(f"P = 0,4×{p1:.2f} + 0,4×{p2:.2f} + 0,2×{p3:.2f} = **{P:.2f} %**")
         st.metric("🏆 P — НГПТ", f"{P:.2f} %",
                   help="Формула (48). Вес в ИТСэф: 0,20. Применяется только для городских агломераций. ≥ 80 % — хорошо; 50–80 % — удовлетворительно.")
-        st.caption(grade(P))
+        grade_md(P)
         save_button("P","P",P)
 
 
@@ -1068,7 +1078,7 @@ elif section.startswith("VII. "):
     )
     st.metric("🏆 ИТСэф", f"{ITS:.2f} %",
               help="Сводная формула (58) по Евстигнееву И.А.")
-    st.caption(grade(ITS))
+    grade_md(ITS)
     st.divider()
 
     col_radar, col_res = st.columns(2)
@@ -1229,3 +1239,4 @@ elif section.startswith("VII. "):
             mime="application/pdf",
             use_container_width=True,
         )
+
