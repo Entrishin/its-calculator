@@ -329,6 +329,10 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+/* Глобальный шрифт */
+html, body, [class*="css"], .stMarkdown, .stText, p, span, div, label, button {
+    font-family: 'Source Sans Pro', 'Source Sans 3', sans-serif !important;
+}
 /* Убираем лишний отступ сверху в основной зоне */
 .main .block-container {
     padding-top: 0 !important;
