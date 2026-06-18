@@ -1030,15 +1030,16 @@ elif section.startswith("VII. "):
     def _sync(wk, sk):
         st.session_state[sk] = st.session_state[wk]
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
         S     = st.number_input("S — Светофорное управление, %",          -500.0, 500.0, float(st.session_state['S']     or 75.0), format="%.2f", key="vS", on_change=_sync, args=("vS","S"))
-        Z     = st.number_input("Z — Безопасность дорожного движения, %", -500.0, 100.0, float(st.session_state['Z']     or 70.0), format="%.2f", key="vZ", on_change=_sync, args=("vZ","Z"))
-        M     = st.number_input("M — Мониторинг транспортного потока, %",    0.0, 100.0, float(st.session_state['M']     or 85.0), format="%.2f", key="vM", on_change=_sync, args=("vM","M"))
-    with col2:
         H     = st.number_input("H — Метеомониторинг, %",                   0.0, 100.0, float(st.session_state['H']     or 80.0), format="%.2f", key="vH", on_change=_sync, args=("vH","H"))
+    with col2:
+        Z     = st.number_input("Z — Безопасность дорожного движения, %", -500.0, 100.0, float(st.session_state['Z']     or 70.0), format="%.2f", key="vZ", on_change=_sync, args=("vZ","Z"))
         W_vid = st.number_input("W — Видеонаблюдение, %",                   0.0, 100.0, float(st.session_state['W_vid'] or 78.0), format="%.2f", key="vW", on_change=_sync, args=("vW","W_vid"))
-        P     = st.number_input("P — НГПТ, %",          -500.0, 100.0, float(st.session_state['P']     or 72.0), format="%.2f", key="vP", on_change=_sync, args=("vP","P"))
+    with col3:
+        M     = st.number_input("M — Мониторинг транспортного потока, %",    0.0, 100.0, float(st.session_state['M']     or 85.0), format="%.2f", key="vM", on_change=_sync, args=("vM","M"))
+        P     = st.number_input("P — НГПТ, %",                            -500.0, 100.0, float(st.session_state['P']     or 72.0), format="%.2f", key="vP", on_change=_sync, args=("vP","P"))
 
     st.divider()
     ITS = 0.2*S + 0.2*Z + 0.1*M + 0.1*H + 0.2*W_vid + 0.2*P
