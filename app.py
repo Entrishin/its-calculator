@@ -1131,7 +1131,7 @@ elif section.startswith("VII. "):
         st.plotly_chart(fig, use_container_width=True)
 
     with col_res:
-        st.caption("Гистограмма показывает, сколько процентов каждый комплексный показатель реально добавляет в итоговый ИТСэф с учётом своего веса.")
+        st.markdown("<small style='color:rgba(49,51,63,0.6);line-height:0'>Гистограмма показывает, сколько процентов каждый комплексный показатель реально добавляет в итоговый ИТСэф с учётом своего веса.</small>", unsafe_allow_html=True)
         sub_names   = ['S<br>Светофоры', 'Z<br>БДД', 'M<br>Мониторинг',
                        'H<br>Метео', 'W<br>Видео', 'P<br>НГПТ']
         contribs    = [0.2*S, 0.2*Z, 0.1*M, 0.1*H, 0.2*W_vid, 0.2*P]
