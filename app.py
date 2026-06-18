@@ -379,7 +379,7 @@ def save_button(label, key, value):
         st.rerun()
 
 # ── Sidebar ────────────────────────────────────────────────────
-_gap = "<div style='margin-bottom:14px'></div>"
+_gap = "<hr style='border:none;border-top:1px solid #d4d4d4;margin:12px 0 14px 0'>"
 
 with st.sidebar:
     st.title("🚦 Калькулятор оценки эффективности ИТС")
