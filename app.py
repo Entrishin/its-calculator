@@ -542,7 +542,7 @@ if section.startswith("I. "):
             ts1 = col1.number_input("τs₁ — задержка предыдущий период, ч/км", 0.0001, 100.0, 0.025, format="%.4f")
             ts2 = col2.number_input("τs₂ — задержка текущий период, ч/км",    0.0,    100.0, 0.020, format="%.4f")
         else:
-            st.markdown("#### Формула (7)")
+            st.markdown("#### Формула")
             st.latex(r"\tau_s = \frac{\displaystyle\sum_{i=1}^{n} m_i\cdot\tau_i}{\displaystyle\sum_{i=1}^{n} m_i\cdot l_i}\,,\quad\text{ч/км}")
             st.caption("τᵢ = T − Tсв  (задержка = фактическое время − время свободного движения)")
 
