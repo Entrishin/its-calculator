@@ -611,11 +611,11 @@ if section.startswith("I. "):
             if n1 >= n2:
                 st.latex(r"S_3 = \left(1 - \frac{N_{\text{ост}2}}{N_{\text{ост}1}}\right)\times 100\%")
                 s3 = (1 - n2 / n1) * 100
-                st.caption("Формула (11): остановок стало меньше или равно")
+                st.caption("Остановок стало меньше или равно")
             else:
                 st.latex(r"S_3 = \frac{N_{\text{ост}2}}{N_{\text{ост}1}}\times 100\%")
                 s3 = (n2 / n1) * 100
-                st.caption("Формула (12): остановок стало больше")
+                st.caption("Остановок стало больше")
         else:
             s3 = 0.0
         st.metric("🎯 S₃", f"{s3:.2f} %",
@@ -986,11 +986,11 @@ elif section.startswith("VI. "):
         if eb >= e2:
             st.latex(r"P_3=\frac{e_2}{e_б}\times 100\%")
             p3=(e2/eb)*100
-            st.caption("Формула (54): eб ≥ e₂ — пассажиропоток на уровне базового или ниже")
+            st.caption("eб ≥ e₂ — пассажиропоток на уровне базового или ниже")
         else:
             st.latex(r"P_3=\left(1-\frac{e_2}{e_б}\right)\times 100\%")
             p3=(1-e2/eb)*100
-            st.caption("Формула (55): eб < e₂ — пассажиропоток выше базового")
+            st.caption("eб < e₂ — пассажиропоток выше базового")
             st.warning("Отрицательный P₃ означает: провозная способность не справляется с пассажиропотоком (переполненность)")
         st.metric("🎯 P₃",f"{p3:.2f} %"); grade_md(p3)
         with st.expander("Дополнительный показатель P₃к (для местного уровня)"):
