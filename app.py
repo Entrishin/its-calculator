@@ -610,11 +610,9 @@ if section.startswith("I. "):
         st.divider()
         if n1 > 0:
             if n1 >= n2:
-                st.latex(r"S_3 = \left(1 - \frac{N_{\text{ост}2}}{N_{\text{ост}1}}\right)\times 100\%")
                 s3 = (1 - n2 / n1) * 100
                 st.caption("Остановок стало меньше или равно")
             else:
-                st.latex(r"S_3 = \frac{N_{\text{ост}2}}{N_{\text{ост}1}}\times 100\%")
                 s3 = (n2 / n1) * 100
                 st.caption("Остановок стало больше")
         else:
