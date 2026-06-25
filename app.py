@@ -619,7 +619,7 @@ if section.startswith("I. "):
             s3 = 0.0
         st.metric("🎯 S₃", f"{s3:.2f} %",
                   help="≥ 80 % — хорошо; 50–80 % — удовлетворительно; < 50 % — неудовлетворительно.")
-        st.caption(grade_maturity(s3))
+        grade_md(s3)
 
     # ── S4 ──
     with t4:
@@ -632,7 +632,7 @@ if section.startswith("I. "):
         st.divider()
         st.metric("🎯 S₄", f"{s4:.2f} %",
                   help="≥ 80 % — хорошо; 50–80 % — удовлетворительно; < 50 % — неудовлетворительно.")
-        st.caption(grade_maturity(s4))
+        grade_md(s4)
 
     # ── Итог S ──
     with t5:
@@ -648,7 +648,7 @@ if section.startswith("I. "):
         st.markdown(f"S = 0,4 × {s1:.2f} + 0,2 × {s2:.2f} + 0,2 × {s3:.2f} + 0,2 × {s4:.2f} = **{S:.2f} %**")
         st.metric("🏆 S — Светофорное управление", f"{S:.2f} %",
                   help="Вес в ИТСэф: 0,20. ≥ 80 % — хорошо; 50–80 % — удовлетворительно; < 50 % — неудовлетворительно.")
-        st.caption(grade_maturity(S))
+        grade_md(S)
         save_button("S", "S", S)
 
 
