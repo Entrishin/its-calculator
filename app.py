@@ -533,7 +533,7 @@ with st.sidebar:
             st.caption(f"⬜ {lbl}: не заполнен")
 
     st.markdown(_gap, unsafe_allow_html=True)
-    with st.expander("📖 Список сокращений"):
+    with st.expander("Список сокращений"):
         st.markdown(
             "**АДМС** — автоматическая дорожная метеорологическая станция  \n"
             "**АСУДД** — автоматизированная система управления дорожным движением  \n"
