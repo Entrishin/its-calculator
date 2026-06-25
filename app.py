@@ -526,8 +526,8 @@ if section.startswith("I. "):
 
         st.divider()
         st.metric("🎯 S₁", f"{s1:.2f} %",
-                  help="Уровень зрелости по доле светофоров с адаптивным и диспетчерским управлением.")
-        st.caption(grade_maturity(s1))
+                  help="S₁ = S₁.₁ + S₁.₂. Уровень зрелости определяется только по доле адаптивного управления (S₁.₁).")
+        st.caption(grade_maturity(s11 * 100))
 
     # ── S2 ──
     with t2:
