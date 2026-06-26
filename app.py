@@ -615,8 +615,8 @@ if section.startswith("I. "):
         st.divider()
         st.metric("🎯 S₁", f"{s1:.2f} %")
         st.metric(
-            f"{grade_maturity(s11 * 100)} — по доле адаптивного управления",
-            f"S₁.₁ = {s11*100:.1f} %",
+            f"{grade_maturity(s11 * 100)} — по доле адаптивного управления (S₁.₁ = {s11*100:.1f} %)",
+            "",
             help=_H_MATURITY
         )
 
