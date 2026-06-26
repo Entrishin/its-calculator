@@ -618,7 +618,11 @@ if section.startswith("I. "):
         st.markdown(
             f"<small>{grade_maturity(s11 * 100)} — по доле адаптивного управления "
             f"(S₁.₁ = {s11*100:.1f} %)"
-            f" <span title='{_mat_tip}' style='cursor:help;color:#7CD7F8;font-weight:600'>(?)</span></small>",
+            f" <span title='{_mat_tip}' style='"
+            "cursor:help;display:inline-flex;align-items:center;justify-content:center;"
+            "width:14px;height:14px;border-radius:50%;border:1.5px solid #7CD7F8;"
+            "color:#7CD7F8;font-size:9px;font-weight:700;line-height:1;"
+            "vertical-align:middle;margin-left:2px'>?</span></small>",
             unsafe_allow_html=True
         )
 
