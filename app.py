@@ -371,6 +371,18 @@ section[data-testid="stSidebar"] [data-testid="stProgressBar"] {
 [data-testid="stSidebarContent"] {
     padding-top: 0.5rem !important;
 }
+/* Подсказки help= — оранжевый цвет для заметности */
+[data-testid="stTooltipIcon"] button {
+    color: #E6820E !important;
+    opacity: 1 !important;
+}
+[data-testid="stTooltipIcon"] svg {
+    fill: #E6820E !important;
+    color: #E6820E !important;
+}
+[data-testid="stTooltipIcon"] svg path {
+    fill: #E6820E !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
