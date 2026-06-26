@@ -613,9 +613,14 @@ if section.startswith("I. "):
         s1 = (s11 + s12) * 100
 
         st.divider()
-        st.metric("🎯 S₁", f"{s1:.2f} %",
-                  help=_H_MATURITY)
-        st.caption(f"{grade_maturity(s11 * 100)} — по доле адаптивного управления (S₁.₁ = {s11*100:.1f} %)")
+        st.metric("🎯 S₁", f"{s1:.2f} %")
+        _mat_tip = _H_MATURITY.replace("'", "&#39;")
+        st.markdown(
+            f"<small>{grade_maturity(s11 * 100)} — по доле адаптивного управления "
+            f"(S₁.₁ = {s11*100:.1f} %)"
+            f" <span title='{_mat_tip}' style='cursor:help;color:#7CD7F8;font-weight:600'>(?)</span></small>",
+            unsafe_allow_html=True
+        )
 
     # ── S2 ──
     with t2:
