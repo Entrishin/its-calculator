@@ -373,15 +373,15 @@ section[data-testid="stSidebar"] [data-testid="stProgressBar"] {
 }
 /* Подсказки help= — оранжевый цвет для заметности */
 [data-testid="stTooltipIcon"] button {
-    color: #1A8FC1 !important;
+    color: #7CD7F8 !important;
     opacity: 1 !important;
 }
 [data-testid="stTooltipIcon"] svg {
-    fill: #1A8FC1 !important;
-    color: #1A8FC1 !important;
+    fill: #7CD7F8 !important;
+    color: #7CD7F8 !important;
 }
 [data-testid="stTooltipIcon"] svg path {
-    fill: #1A8FC1 !important;
+    fill: #7CD7F8 !important;
 }
 </style>
 """, unsafe_allow_html=True)
